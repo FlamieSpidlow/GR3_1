@@ -1,0 +1,48 @@
+% Inspired by Bùi Vân Anh
+% Begin rewrite by ledangquangdangquang on 2024-09-30
+\documentclass{thesis-config}
+
+%----- PERSONAL INFORMATION -----
+\title{Tiêu đề đồ án}
+\author{Nguyễn Văn A}
+\specialization{Ngành KT Điện tử \& Viễn thông}
+\authoremail{your.email@sis.hust.edu.vn}
+\universitycity{HÀ NỘI}
+\university{ĐẠI HỌC BÁCH KHOA HÀ NỘI}
+\school{Điện - Điện tử}
+\department{Tên môn học}
+\advisor{PGS. TS. Phạm Văn ABC}
+\degree{Đồ án tốt nghiệp}
+\degreemonth{\the\month}
+\degreeyear{\the\year}
+\major{tên chuyên ngành}
+
+%----- MAIN DOCUMENT -----
+\begin{document}
+    % MỞ ĐẦU 
+    \input{MoDau/Bia} 
+    \input{MoDau/NhiemVuDoAnTotNghiep} 
+    \input{MoDau/CamOnvaTomTat} 
+    \input{MoDau/MucLuc} 
+    \pagenumbering{roman} % Đánh số trang thứ tự la mã
+    \input{MoDau/DanhMucKyHieuVaChuVietTat} 
+    \input{MoDau/DanhMucHinhVe} 
+    \input{MoDau/DanhMucBangBieu} 
+    \pagenumbering{arabic}% Đánh số trang thứ tự bình thường
+    % NỘI DUNG
+    \input{./NoiDung/Chuong1}
+    \input{./NoiDung/Chuong2}
+    \input{./NoiDung/Chuong3}
+    \input{./NoiDung/Chuong4}
+    \input{./NoiDung/Chuong5}
+    % KẾT THÚC
+    \input{KetThuc/KetLuan} 
+    \input{KetThuc/TaiLieuThamKhao} 
+    \input{KetThuc/PhuLuc} 
+\end{document}
+
+% Shortcuts for LateX Workshop extension in VSCode:
+% Ctrl + Alt + J: SyncTeX from edit view
+% Ctrl + Click:   SyncTeX from read view
+% Ctrl + Alt + B: Build LaTeX project
+% Ctrl + Alt + V: View PDF

@@ -1,0 +1,25 @@
+\documentclass[../DoAn.tex]{subfiles}
+\begin{document}
+\section{Kết luận}
+Đồ án đã thiết kế và xây dựng được một nguyên mẫu trò chơi ô chữ tiếng Việt trên nền tảng Godot. Sản phẩm hỗ trợ luồng chơi từ chọn tài khoản, chọn chủ đề, chọn màn, giải ô chữ, dùng gợi ý, tính điểm, nhận sao và lưu tiến độ cục bộ. Về mặt kỹ thuật, đồ án đã xây dựng các thành phần chính gồm bộ xử lý từ tiếng Việt, bộ sinh bảng ô chữ, bộ quản lý chủ đề và màn chơi, bộ quản lý trạng thái trò chơi, giao diện tương tác và bộ lưu dữ liệu người chơi.
+
+Kết quả đạt được cho thấy hướng tiếp cận sử dụng Godot và GDScript phù hợp với một trò chơi 2D quy mô nhỏ. Việc chuẩn hóa từ tiếng Việt và tách dạng hiển thị khỏi dạng xếp bảng giúp hệ thống xử lý được cả từ đơn và cụm từ có khoảng trắng. Bộ sinh bảng theo heuristic đáp ứng được yêu cầu tạo bảng chơi tự động trong phạm vi đề tài. Bên cạnh đó, cơ chế sao, nhiệm vụ và lưu tiến độ giúp trò chơi có tính hoàn chỉnh hơn so với một bài tập ô chữ đơn lẻ.
+
+Tuy nhiên, sản phẩm vẫn còn một số hạn chế. Dữ liệu từ vựng hiện được nhúng trực tiếp trong mã nguồn nên việc mở rộng hoặc chỉnh sửa nội dung chưa thuận tiện. Bộ sinh bảng chưa có đánh giá thống kê đầy đủ về chất lượng sinh màn. Ứng dụng chưa có công cụ biên tập chủ đề, chưa hỗ trợ đồng bộ dữ liệu qua mạng và chưa có kiểm thử tự động đầy đủ. Một số phần đánh giá trải nghiệm người dùng cũng cần được thực hiện thêm với người chơi thực tế.
+
+Từ quá trình thực hiện, có thể rút ra một số kinh nghiệm. Thứ nhất, với ứng dụng trò chơi nhỏ, việc phân tách rõ dữ liệu, thuật toán và giao diện giúp quá trình chỉnh sửa dễ kiểm soát hơn. Thứ hai, xử lý tiếng Việt cần được xem là một yêu cầu thiết kế ngay từ đầu, không nên chỉ xử lý ở bước hiển thị cuối cùng. Thứ ba, thuật toán sinh nội dung cho trò chơi cần cân bằng giữa chất lượng kết quả và thời gian chờ của người chơi. Thứ tư, giao diện cần được thiết kế dựa trên kích thước màn hình thực tế để tránh tình trạng bảng chữ vượt khỏi vùng hiển thị.
+
+So với mục tiêu ban đầu, đồ án đã hoàn thành phần lõi của sản phẩm: có dữ liệu chủ đề, có sinh bảng, có giao diện chơi, có kiểm tra đáp án, có gợi ý, có điểm và có lưu tiến độ. Những phần còn thiếu chủ yếu thuộc nhóm hoàn thiện sản phẩm và đánh giá thực nghiệm, bao gồm bổ sung nội dung, thêm hình ảnh minh họa, chạy kiểm thử có hệ thống và thu thập phản hồi người dùng.
+
+\section{Hướng phát triển}
+Trong tương lai, sản phẩm có thể được phát triển theo một số hướng. Trước hết, dữ liệu chủ đề nên được tách ra khỏi mã nguồn thành các tệp dữ liệu độc lập để dễ bổ sung từ mới và gợi ý mới. Tiếp theo, có thể xây dựng công cụ biên tập chủ đề và màn chơi để người không lập trình cũng có thể tạo nội dung. Bộ sinh bảng có thể được cải tiến bằng cách thử nhiều chiến lược sắp xếp từ hơn, đo thời gian sinh và đánh giá tỉ lệ đặt được từ.
+
+Về phía trải nghiệm người chơi, ứng dụng có thể bổ sung nhiều kiểu nhiệm vụ, hiệu ứng hoàn thành, bảng thành tích, chế độ luyện tập theo độ khó và hệ thống thống kê tiến bộ. Nếu triển khai ở quy mô lớn hơn, dữ liệu người chơi có thể được đồng bộ qua tài khoản trực tuyến. Ngoài ra, sản phẩm cũng có thể được xuất bản cho nhiều nền tảng như Windows, Web hoặc thiết bị di động để mở rộng phạm vi sử dụng.
+
+Một hướng phát triển có giá trị khác là xây dựng hệ thống đánh giá độ khó. Hiện tại mỗi màn được chia theo số lượng từ và khả năng sinh bảng, nhưng chưa có thang độ khó dựa trên độ dài từ, mức độ phổ biến của từ, số giao điểm, độ rõ của gợi ý hoặc số lần người chơi đoán sai. Nếu thu thập được dữ liệu chơi thực tế, hệ thống có thể điều chỉnh độ khó tốt hơn và đề xuất màn phù hợp với từng người chơi.
+
+Cuối cùng, ứng dụng có thể được mở rộng thành một nền tảng nội dung nhỏ cho trò chơi chữ tiếng Việt. Khi đó, người dùng hoặc giáo viên có thể tạo chủ đề riêng, nhập danh sách từ và gợi ý, sau đó hệ thống tự sinh màn chơi. Hướng phát triển này phù hợp với mục tiêu học tập vì nội dung có thể được cá nhân hóa theo bài học, độ tuổi hoặc chủ đề kiến thức.
+
+\textbf{[Cần bổ sung: nếu sau này có khảo sát người dùng hoặc kết quả kiểm thử chính thức, thêm số liệu vào phần kết luận để tăng độ thuyết phục.]}
+
+\end{document}

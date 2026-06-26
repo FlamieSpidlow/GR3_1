@@ -1,0 +1,224 @@
+\documentclass[../DoAn.tex]{subfiles}
+\begin{document}
+
+Chương này trình bày thiết kế và quá trình xây dựng ứng dụng. Nội dung chương mô tả kiến trúc phần mềm, thiết kế các thành phần chính, giao diện, dữ liệu lưu trữ, công cụ sử dụng, kết quả đạt được và kế hoạch kiểm thử.
+
+\section{Thiết kế kiến trúc}
+\subsection{Lựa chọn kiến trúc phần mềm}
+Ứng dụng được thiết kế theo hướng phân tách trách nhiệm giữa dữ liệu, logic nghiệp vụ và giao diện. Do Godot tổ chức chương trình theo scene và node, kiến trúc của đồ án không áp dụng MVC theo hình thức truyền thống, nhưng vẫn giữ tinh thần tách lớp: thành phần trạng thái trò chơi lưu dữ liệu và quy tắc tính toán, thành phần sinh màn chịu trách nhiệm tạo dữ liệu chơi, thành phần giao diện chịu trách nhiệm hiển thị và nhận tương tác từ người dùng.
+
+Trong kiến trúc cụ thể, \texttt{GameState} quản lý bảng chữ, danh sách từ đã đặt, điểm số, thời gian, lịch sử đoán và nhiệm vụ. \texttt{BoardGenerator} sinh bảng ô chữ từ danh sách từ. \texttt{ThemedLevelProvider} quản lý chủ đề, gợi ý và chia chủ đề thành các màn. \texttt{UIController} điều khiển màn hình chơi, còn \texttt{main.gd} điều khiển luồng menu, tài khoản và chuyển cảnh. \texttt{SaveManager} quản lý việc đọc ghi tiến độ cục bộ. Cách phân tách này giúp từng phần có nhiệm vụ tương đối rõ ràng và có thể thay đổi độc lập ở mức nhất định.
+
+Luồng phụ thuộc được thiết kế theo hướng các thành phần giao diện gọi tới các thành phần nghiệp vụ, trong khi các thành phần nghiệp vụ không phụ thuộc ngược vào giao diện cụ thể. Ví dụ, \texttt{BoardGenerator} không biết bảng được hiển thị bằng nút hay bằng hình ảnh; nó chỉ trả về cấu trúc lưới và danh sách từ đã đặt. \texttt{GameState} không biết dữ liệu được lấy từ chủ đề nào; nó chỉ nhận một bảng đã sinh và quản lý trạng thái chơi trên bảng đó. Cách tách này giúp việc kiểm tra logic sinh bảng và logic trạng thái không bị ràng buộc chặt với scene.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3.5cm}|p{5.2cm}|p{5.2cm}|}
+\hline
+\textbf{Tầng/nhóm} & \textbf{Thành phần} & \textbf{Trách nhiệm chính} \\ \hline
+Điều phối ứng dụng & \texttt{main.gd} & Quản lý luồng menu, tài khoản, chọn chủ đề, chọn màn và chuyển sang màn chơi. \\ \hline
+Giao diện chơi & \texttt{UIController}, \texttt{TileButton}, \texttt{InputController} & Hiển thị bảng, gợi ý, trạng thái, nhận sự kiện từ người chơi và cập nhật giao diện. \\ \hline
+Trạng thái trò chơi & \texttt{GameState} & Lưu bảng, từ đã đặt, điểm, thời gian, nhiệm vụ, lịch sử đoán và trạng thái hoàn thành. \\ \hline
+Sinh nội dung & \texttt{ThemedLevelProvider}, \texttt{BoardGenerator} & Quản lý chủ đề, chia màn, tạo gợi ý và sinh bảng ô chữ. \\ \hline
+Xử lý tiếng Việt & \texttt{WordEntry}, \texttt{VietnameseNormalizer}, \texttt{DiacriticHelper} & Chuẩn hóa từ, tách ký tự, quản lý dấu và so khớp đáp án. \\ \hline
+Lưu trữ & \texttt{SaveManager} & Đọc, ghi, chuẩn hóa dữ liệu tiến độ cục bộ theo tài khoản. \\ \hline
+\end{tabular}
+\caption{Phân nhóm thành phần trong kiến trúc ứng dụng}
+\label{table:architecture_groups}
+\end{table}
+
+\subsection{Thiết kế tổng quan}
+\textbf{[Cần bổ sung: vẽ biểu đồ kiến trúc/gói UML cho hệ thống. Biểu đồ nên có các gói hoặc nhóm thành phần: Menu, Gameplay UI, Game State, Level Provider, Board Generator, Save Manager, Vietnamese Processing. Mũi tên phụ thuộc nên thể hiện Main gọi UIController và ThemedLevelProvider; UIController dùng GameState, InputController và SaveManager; ThemedLevelProvider dùng WordEntry, VietnameseNormalizer và BoardGenerator.]}
+
+Ở mức tổng quan, hệ thống bắt đầu từ scene \texttt{Main}. Scene này chứa \texttt{StartMenu} và \texttt{GameBoard}. Khi người chơi chọn một màn, \texttt{main.gd} yêu cầu \texttt{ThemedLevelProvider} tạo dữ liệu màn, sau đó khởi tạo \texttt{GameState} và truyền cho \texttt{UIController}. Từ thời điểm đó, \texttt{UIController} chịu trách nhiệm xây dựng bảng, hiển thị gợi ý, nhận đáp án, cập nhật trạng thái và gọi \texttt{SaveManager} khi cần lưu dữ liệu.
+
+Scene \texttt{StartMenu} chỉ chứa khung giao diện tĩnh ban đầu như nền, thẻ menu, hàng chọn tài khoản, hàng chọn chủ đề và các nút điều hướng. Các popup như quản lý tài khoản, thêm tài khoản, xác nhận xóa tài khoản, hướng dẫn và chọn màn được tạo bằng mã trong \texttt{main.gd}. Cách này giúp giảm số lượng scene phụ, đồng thời cho phép nội dung popup được cập nhật theo trạng thái hiện tại như danh sách tài khoản hoặc danh sách màn.
+
+Scene \texttt{GameBoard} chứa cấu trúc giao diện của màn chơi. Bảng chữ được đặt trong \texttt{GridContainer}, danh sách gợi ý được đặt trong \texttt{HFlowContainer}, còn các nút thao tác như chơi lại, mở gợi ý và đoán đáp án được đặt trong vùng điều khiển. Các overlay tạm dừng và hoàn thành cũng nằm trong scene này nhưng mặc định ẩn, chỉ hiện khi người chơi bấm phím tạm dừng hoặc hoàn thành toàn bộ màn chơi.
+
+\subsection{Thiết kế chi tiết gói}
+\textbf{[Cần bổ sung: vẽ biểu đồ lớp mức cao. Nên thể hiện các lớp chính gồm BoardGenerator, WordEntry, VietnameseNormalizer, DiacriticHelper, ThemedLevelProvider, GameState, UIController, InputController, SaveManager và TileButton.]}
+
+Nhóm xử lý dữ liệu từ gồm \texttt{WordEntry}, \texttt{VietnameseNormalizer} và \texttt{DiacriticHelper}. \texttt{WordEntry} giữ dạng từ gốc, dạng xếp bảng, gợi ý, danh sách ký tự và độ dài. \texttt{VietnameseNormalizer} cung cấp các hàm chuẩn hóa, bỏ khoảng trắng và so khớp đáp án. \texttt{DiacriticHelper} mô tả thông tin dấu và biến thể nguyên âm của từng ký tự.
+
+Nhóm sinh nội dung gồm \texttt{ThemedLevelProvider} và \texttt{BoardGenerator}. \texttt{ThemedLevelProvider} tạo danh sách từ theo chủ đề, sinh gợi ý và chia chủ đề thành nhiều màn. \texttt{BoardGenerator} nhận danh sách \texttt{WordEntry} và sinh ra lưới ô chữ cùng danh sách các từ đã đặt. Nhóm giao diện gồm \texttt{main.gd}, \texttt{UIController}, \texttt{InputController} và \texttt{TileButton}. Các thành phần này nhận sự kiện từ người chơi và cập nhật hiển thị dựa trên trạng thái trò chơi.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3.5cm}|p{5.5cm}|p{4.8cm}|}
+\hline
+\textbf{Lớp/script} & \textbf{Dữ liệu chính} & \textbf{Phương thức/chức năng tiêu biểu} \\ \hline
+\texttt{BoardGenerator} & Lưới tạm, danh sách từ đã đặt & Sinh bảng, tìm vị trí đặt từ, kiểm tra hợp lệ, tính giao điểm \\ \hline
+\texttt{ThemedLevelProvider} & Danh sách chủ đề, gợi ý, màn chơi & Xây dựng chủ đề, chia màn, tạo dữ liệu màn, sinh gợi ý \\ \hline
+\texttt{GameState} & Bảng chữ, từ đã đặt, điểm, thời gian, nhiệm vụ & Kiểm tra từ, mở từ, tính điểm, quản lý nhiệm vụ, đếm tiến độ \\ \hline
+\texttt{UIController} & Node giao diện, ô chữ, nút gợi ý, trạng thái hiển thị & Dựng bảng, nhận đáp án, xử lý gợi ý, cập nhật UI, hiển thị kết quả \\ \hline
+\texttt{SaveManager} & Hồ sơ người chơi, bản ghi tiến độ & Tạo tài khoản, chọn tài khoản, lưu điểm, lưu sao, lưu tiến độ màn \\ \hline
+\texttt{VietnameseNormalizer} & Chuỗi tiếng Việt & Chuẩn hóa từ, bỏ khoảng trắng, tách ký tự, so khớp đáp án \\ \hline
+\end{tabular}
+\caption{Mô tả các lớp và script chính}
+\label{table:main_classes}
+\end{table}
+
+\section{Thiết kế chi tiết}
+\subsection{Thiết kế giao diện}
+Giao diện được chia thành hai phần chính: menu và màn chơi. Menu có nhiệm vụ chọn tài khoản, chọn chủ đề và chọn màn. Màn chơi hiển thị bảng ô chữ ở bên trái, các gợi ý và nút thao tác ở bên phải, phía trên có thông tin thời gian và số sao. Trên màn hình hẹp, bố cục chuyển sang dạng dọc để hạn chế tràn nội dung.
+
+\textbf{[Cần bổ sung: chèn ảnh màn hình menu chính, màn chọn chủ đề/màn chơi và màn chơi. Ảnh nên lưu trong thư mục \texttt{Hinhve/}, sau đó dùng \texttt{\textbackslash includegraphics}.]}
+
+Màn hình menu chính được thiết kế để người chơi bắt đầu nhanh. Thành phần nổi bật nhất là tiêu đề trò chơi, hàng chọn tài khoản và các nút Chơi, Hướng dẫn, Thoát game. Khi bấm Chơi, giao diện chuyển sang chế độ chọn chủ đề. Ở chế độ này, hàng tài khoản được ẩn, hàng chủ đề được hiển thị và nút quay lại xuất hiện ở góc trên. Cách tách luồng này giúp màn hình không bị quá nhiều lựa chọn cùng lúc.
+
+Popup chọn màn xuất hiện sau khi người chơi chọn một chủ đề và bấm chọn màn. Mỗi nút màn hiển thị số thứ tự màn, số từ trong màn, số sao đã đạt và trạng thái đã hoàn thành hoặc chưa hoàn thành. Thiết kế này giúp người chơi biết nhanh tiến độ của từng chủ đề mà không cần mở từng màn.
+
+Trong màn chơi, vùng bảng chữ chiếm phần lớn chiều ngang vì đây là khu vực tương tác chính. Vùng điều khiển bên phải chứa danh sách số gợi ý. Khi người chơi chọn một số, nội dung gợi ý được hiển thị ở tiêu đề vùng gợi ý. Cách hiển thị này giúp danh sách gợi ý không chiếm quá nhiều diện tích, đặc biệt khi màn có nhiều từ. Ô nhập đáp án và nút đoán được đặt gần vùng gợi ý để người chơi có thể đọc gợi ý và nhập câu trả lời liên tục.
+
+Giao diện cũng có các phản hồi trạng thái như thông báo đúng, sai, không đủ sao hoặc yêu cầu chọn gợi ý. Các phản hồi này được hiển thị trong vùng trạng thái thay vì dùng nhiều hộp thoại nhỏ, nhằm giảm gián đoạn khi chơi. Khi người chơi hoàn thành toàn bộ màn, hộp thoại kết quả mới được hiển thị để tổng kết điểm, sao, thời gian và nhiệm vụ.
+
+\subsection{Thiết kế lớp}
+\texttt{GameState} là lớp trung tâm của trạng thái chơi. Lớp này lưu lưới ô chữ, danh sách từ, số lần đoán, số đáp án đúng, điểm, nhiệm vụ, thời gian, gợi ý đã dùng và lịch sử nhập đáp án. Các phương thức quan trọng gồm đặt bảng, kiểm tra từ, mở từ, mở một chữ, tính điểm, tính nhiệm vụ và lấy thời gian đã chơi.
+
+\texttt{BoardGenerator} chịu trách nhiệm sinh bảng. Phương thức chính \texttt{generate\_board} tạo lưới rỗng, đặt từ đầu tiên, sau đó tìm vị trí phù hợp cho các từ còn lại. Các hàm phụ như tìm vị trí giao nhau, kiểm tra khả năng đặt từ, tính số giao điểm và tính vùng bao giúp đánh giá chất lượng vị trí đặt từ.
+
+\texttt{UIController} là lớp điều khiển giao diện màn chơi. Lớp này xây dựng các ô chữ từ \texttt{Tile.tscn}, tạo danh sách nút gợi ý, nhận sự kiện nhập đáp án, xử lý nút gợi ý, cập nhật điểm, sao, thời gian và hiển thị hộp thoại hoàn thành. \texttt{SaveManager} là lớp tĩnh dùng để lưu và đọc dữ liệu tiến độ từ tệp JSON.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3.5cm}|p{10.2cm}|}
+\hline
+\textbf{Lớp} & \textbf{Thiết kế chi tiết} \\ \hline
+\texttt{GameState} & Quản lý toàn bộ dữ liệu động của một lượt chơi. Lớp này không trực tiếp hiển thị giao diện mà cung cấp các hàm như kiểm tra từ, đếm số từ hoàn thành, mở từ, mở một chữ và tính nhiệm vụ. \\ \hline
+\texttt{BoardGenerator} & Là lớp thuật toán. Lớp này nhận danh sách \texttt{WordEntry}, chiều rộng và chiều cao bảng, sau đó trả về từ điển gồm lưới và danh sách từ đã đặt. \\ \hline
+\texttt{ThemedLevelProvider} & Là lớp dữ liệu và chuẩn bị màn chơi. Lớp này chứa danh sách chủ đề, tạo \texttt{WordEntry}, chia màn, sinh gợi ý và gọi bộ sinh bảng khi người chơi bắt đầu một màn. \\ \hline
+\texttt{UIController} & Là lớp trung gian giữa người chơi và \texttt{GameState}. Lớp này biến dữ liệu trạng thái thành giao diện, đồng thời chuyển thao tác của người chơi thành lời gọi tới trạng thái trò chơi. \\ \hline
+\texttt{SaveManager} & Được thiết kế dưới dạng các hàm tĩnh để các lớp khác có thể đọc ghi tiến độ mà không cần giữ một instance riêng. \\ \hline
+\end{tabular}
+\caption{Thiết kế chi tiết các lớp chủ đạo}
+\label{table:class_design}
+\end{table}
+
+\textbf{[Cần bổ sung: vẽ 1 hoặc 2 biểu đồ trình tự. Gợi ý biểu đồ 1: người chơi chọn màn -> Main -> ThemedLevelProvider -> BoardGenerator -> GameState -> UIController. Gợi ý biểu đồ 2: người chơi nhập đáp án -> UIController -> VietnameseNormalizer -> GameState -> SaveManager nếu hoàn thành.]}
+
+\subsection{Thiết kế dữ liệu lưu trữ}
+Ứng dụng không sử dụng cơ sở dữ liệu quan hệ. Dữ liệu tiến độ được lưu dưới dạng JSON trong tệp \texttt{user://records.json}. Cấu trúc dữ liệu gồm hồ sơ người chơi, tài khoản hiện tại, điểm cao nhất, tổng sao, số sao đã kiếm, số sao đã dùng, số lượt chơi và tiến độ từng màn. Với mỗi màn, hệ thống lưu trạng thái hoàn thành, số sao cao nhất, điểm cao nhất và thời gian tốt nhất.
+
+\textbf{[Cần bổ sung: nếu muốn trình bày trực quan hơn, vẽ sơ đồ cấu trúc JSON hoặc bảng mô tả các trường dữ liệu trong \texttt{records.json}.]}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3.5cm}|p{3.5cm}|p{6.8cm}|}
+\hline
+\textbf{Trường dữ liệu} & \textbf{Kiểu dữ liệu} & \textbf{Ý nghĩa} \\ \hline
+\texttt{current\_profile\_id} & Chuỗi & Mã tài khoản đang được chọn. \\ \hline
+\texttt{profiles} & Từ điển & Danh sách tài khoản cục bộ, mỗi tài khoản có tên và bản ghi tiến độ riêng. \\ \hline
+\texttt{best\_score} & Số nguyên & Điểm cao nhất của tài khoản hiện tại. \\ \hline
+\texttt{total\_stars} & Số nguyên & Tổng số sao hiện có để dùng gợi ý. \\ \hline
+\texttt{earned\_stars} & Số nguyên & Tổng số sao đã kiếm được từ các nhiệm vụ. \\ \hline
+\texttt{spent\_stars} & Số nguyên & Tổng số sao đã sử dụng cho gợi ý. \\ \hline
+\texttt{games\_played} & Số nguyên & Số màn đã hoàn thành hoặc số lượt chơi được ghi nhận. \\ \hline
+\texttt{levels} & Từ điển & Tiến độ theo từng màn, khóa là mã màn chơi. \\ \hline
+\texttt{completed} & Boolean & Trạng thái hoàn thành của một màn. \\ \hline
+\texttt{stars} & Số nguyên & Số sao cao nhất từng đạt ở màn tương ứng. \\ \hline
+\texttt{best\_time} & Số nguyên & Thời gian hoàn thành tốt nhất của màn, tính bằng giây. \\ \hline
+\end{tabular}
+\caption{Các trường dữ liệu chính trong tệp lưu tiến độ}
+\label{table:save_fields}
+\end{table}
+
+\section{Xây dựng ứng dụng}
+\subsection{Thư viện và công cụ sử dụng}
+\begin{table}[H]
+\centering{}
+    \begin{tabular}{lll}
+        \hline
+        \textbf{Mục đích} & \textbf{Công cụ/Công nghệ} & \textbf{Ghi chú} \\ \hline
+        Game engine & Godot Engine 4.x & Xây dựng giao diện và logic trò chơi \\ \hline
+        Ngôn ngữ lập trình & GDScript & Viết toàn bộ logic ứng dụng \\ \hline
+        Định dạng lưu trữ & JSON & Lưu tiến độ người chơi cục bộ \\ \hline
+        Quản lý tài liệu & LaTeX/Overleaf & Viết báo cáo đồ án \\ \hline
+        Soạn thảo mã nguồn & Visual Studio Code/Godot Editor & Phát triển và chỉnh sửa mã nguồn \\ \hline
+    \end{tabular}
+    \caption{Danh sách công cụ và công nghệ sử dụng}
+    \label{table:tools}
+\end{table}
+
+\textbf{[Cần bổ sung: nếu cần chính xác tuyệt đối, thay Godot 4.x bằng phiên bản cụ thể đang dùng trong Godot Editor.]}
+
+Mã nguồn phần trò chơi được tổ chức chủ yếu trong thư mục \texttt{scripts}. Tại thời điểm viết báo cáo, thư mục này gồm 13 file GDScript với khoảng 4.945 dòng mã. Các file lớn nhất là \texttt{ui\_controller.gd}, \texttt{main.gd}, \texttt{themed\_level\_provider.gd} và \texttt{manual\_clues.gd}. Điều này phản ánh đặc thù của ứng dụng: phần giao diện và dữ liệu chủ đề chiếm dung lượng đáng kể, trong khi các lớp tiện ích như chuẩn hóa tiếng Việt hoặc mô tả từ có kích thước nhỏ hơn.
+
+\subsection{Kết quả đạt được}
+Sản phẩm hiện tại là một nguyên mẫu trò chơi ô chữ tiếng Việt có thể chơi được. Ứng dụng có màn hình menu, quản lý tài khoản cục bộ, danh sách chủ đề, danh sách màn chơi, bảng ô chữ sinh tự động, gợi ý theo số, ô nhập đáp án, hệ thống điểm, hệ thống sao, nhiệm vụ hoàn thành và lưu tiến độ. Bảng chữ được hiển thị bằng các nút ô chữ, tự điều chỉnh kích thước theo vùng hiển thị để phù hợp với các kích thước màn hình khác nhau.
+
+\begin{table}[H]
+\centering{}
+    \begin{tabular}{lll}
+        \hline
+        \textbf{Thành phần} & \textbf{Kết quả} & \textbf{Ghi chú} \\ \hline
+        Chủ đề từ vựng & Nhiều chủ đề tiếng Việt & Dữ liệu nhúng trong mã nguồn \\ \hline
+        Màn chơi & Tối đa 3 màn mỗi chủ đề & Chia từ theo từng chủ đề \\ \hline
+        Kích thước bảng & 18 x 18 & Cố định trong bộ sinh màn \\ \hline
+        Gợi ý & Mở một chữ hoặc mở cả từ & Sử dụng sao \\ \hline
+        Lưu tiến độ & Có & Theo tài khoản cục bộ \\ \hline
+    \end{tabular}
+    \caption{Tóm tắt kết quả xây dựng ứng dụng}
+    \label{table:results}
+\end{table}
+
+\textbf{[Cần bổ sung: thống kê số dòng mã, số file script, dung lượng mã nguồn hoặc ảnh sản phẩm đóng gói nếu giảng viên yêu cầu.]}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{5cm}|p{3cm}|p{5.5cm}|}
+\hline
+\textbf{Nhóm file} & \textbf{Số lượng} & \textbf{Ghi chú} \\ \hline
+Script GDScript trong thư mục \texttt{scripts} & 13 & Bao gồm logic game, UI, sinh bảng, lưu dữ liệu và xử lý tiếng Việt. \\ \hline
+Scene chính trong thư mục \texttt{scenes} & 4 & Gồm \texttt{Main}, \texttt{StartMenu}, \texttt{GameBoard} và \texttt{Tile}. \\ \hline
+Dòng mã GDScript ước tính & 4.945 & Tính theo số dòng trong các file \texttt{.gd} hiện có. \\ \hline
+Tệp cấu hình project & 1 & \texttt{project.godot} khai báo scene chạy chính và cấu hình màn hình. \\ \hline
+\end{tabular}
+\caption{Thống kê sơ bộ mã nguồn ứng dụng}
+\label{table:source_stats}
+\end{table}
+
+\subsection{Minh họa các chức năng chính}
+\textbf{[Cần bổ sung: ảnh minh họa các chức năng chính. Nên có ít nhất các ảnh: màn hình chính, quản lý tài khoản, chọn chủ đề, popup chọn màn, màn chơi đang giải, màn hoàn thành.]}
+
+Các chức năng chính đã được cài đặt gồm chọn tài khoản, chọn chủ đề, chọn màn, giải từ, dùng gợi ý và xem kết quả hoàn thành. Khi người chơi chọn một gợi ý, tiêu đề gợi ý được cập nhật để hiển thị nội dung câu hỏi. Khi nhập đáp án đúng, các ô tương ứng được mở và điểm số thay đổi. Khi hoàn thành toàn bộ từ, hệ thống hiển thị số sao nhiệm vụ, điểm, thời gian và lưu kết quả.
+
+Chức năng quản lý tài khoản cho phép nhiều người chơi sử dụng cùng một bản cài đặt mà không ghi đè tiến độ của nhau. Mỗi tài khoản có tên hiển thị và bản ghi tiến độ riêng. Khi người chơi tạo tài khoản mới, hệ thống tự tạo mã tài khoản và chuyển sang tài khoản đó. Khi xóa tài khoản, hệ thống chỉ cho phép xóa nếu còn ít nhất một tài khoản khác để tránh trạng thái không có hồ sơ.
+
+Chức năng chọn chủ đề hiển thị tiến độ theo dạng số màn đã hoàn thành trên tổng số màn. Thông tin này giúp người chơi biết chủ đề nào đã chơi xong và chủ đề nào còn màn chưa hoàn thành. Chức năng chọn màn hiển thị số từ trong màn và số sao đã đạt, giúp người chơi quyết định chơi màn mới hoặc chơi lại màn cũ để cải thiện kết quả.
+
+Chức năng giải ô chữ được xây dựng quanh thao tác chọn gợi ý và nhập đáp án. Người chơi không cần nhập từng ký tự vào từng ô mà nhập toàn bộ từ đoán. Cách nhập này phù hợp với tiếng Việt vì người chơi có thể dùng bộ gõ quen thuộc của hệ điều hành. Khi đáp án đúng, hệ thống tự động mở các ô chữ tương ứng trên bảng.
+
+Chức năng gợi ý dùng sao làm tài nguyên. Người chơi có thể mở một chữ với chi phí thấp hoặc mở toàn bộ từ với chi phí cao hơn. Nếu sử dụng nhiều gợi ý, người chơi vẫn có thể hoàn thành màn nhưng có thể ảnh hưởng tới nhiệm vụ phụ. Cách thiết kế này tạo sự cân bằng giữa hỗ trợ người chơi và khuyến khích tự giải.
+
+\section{Kiểm thử}
+Quá trình kiểm thử tập trung vào các chức năng quan trọng: sinh bảng hợp lệ, chọn màn chơi, kiểm tra đáp án, sử dụng gợi ý và lưu tiến độ. Với sinh bảng, cần kiểm tra rằng bảng có tối thiểu số từ yêu cầu, các từ đặt trong phạm vi 18 x 18 và các từ có liên kết giao nhau. Với nhập đáp án, cần kiểm tra các trường hợp đúng dấu, có khoảng trắng, sai đáp án và bỏ trống. Với lưu tiến độ, cần kiểm tra việc tạo tài khoản mới, đổi tài khoản, hoàn thành màn và đọc lại dữ liệu sau khi khởi động lại ứng dụng.
+
+\textbf{[Cần bổ sung: bảng test case thực tế. Mỗi dòng nên có mã test, mục tiêu, dữ liệu vào, kết quả mong đợi và kết quả thực tế. Bạn có thể bổ sung sau khi chạy game.]}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{1.5cm}|p{3.1cm}|p{4.3cm}|p{5cm}|}
+\hline
+\textbf{Mã} & \textbf{Chức năng} & \textbf{Dữ liệu/thao tác kiểm thử} & \textbf{Kết quả mong đợi} \\ \hline
+TC01 & Chọn màn & Chọn một chủ đề có ít nhất một màn và bấm màn đầu tiên & Hệ thống chuyển sang màn chơi, bảng chữ và gợi ý được hiển thị. \\ \hline
+TC02 & Nhập đáp án đúng & Chọn một gợi ý và nhập đúng đáp án tương ứng & Từ được mở trên bảng, điểm tăng và trạng thái gợi ý chuyển sang hoàn thành. \\ \hline
+TC03 & Nhập đáp án sai & Chọn một gợi ý và nhập chuỗi không khớp đáp án & Hệ thống báo chưa đúng, không mở từ và ghi nhận lượt đoán sai. \\ \hline
+TC04 & Bỏ trống đáp án & Bấm đoán khi ô nhập rỗng & Hệ thống yêu cầu nhập từ đoán. \\ \hline
+TC05 & Mở một chữ & Chọn một từ chưa hoàn thành và bấm mở một chữ & Một ký tự chưa đúng được mở, số sao giảm theo chi phí. \\ \hline
+TC06 & Không đủ sao & Đặt số sao nhỏ hơn chi phí và bấm gợi ý & Hệ thống báo không đủ sao và không thay đổi bảng. \\ \hline
+TC07 & Hoàn thành màn & Trả lời đúng toàn bộ từ của màn & Hệ thống hiển thị popup hoàn thành, tính sao và lưu tiến độ. \\ \hline
+TC08 & Đổi tài khoản & Tạo tài khoản mới rồi chọn lại tài khoản cũ & Tiến độ và sao của từng tài khoản được giữ riêng. \\ \hline
+\end{tabular}
+\caption{Bộ kiểm thử chức năng đề xuất}
+\label{table:test_cases}
+\end{table}
+
+\section{Triển khai}
+Ứng dụng được triển khai thử nghiệm ở dạng project Godot chạy cục bộ trên máy tính. Người dùng mở project bằng Godot hoặc chạy bản export nếu đã đóng gói. Dữ liệu tiến độ được lưu trong vùng \texttt{user://} của Godot nên không cần máy chủ hoặc kết nối mạng.
+
+\textbf{[Cần bổ sung: môi trường triển khai cụ thể, ví dụ Windows 10/11, độ phân giải màn hình, phiên bản Godot và nếu có thì đường dẫn/bản build đã export.]}
+
+Do ứng dụng hiện là trò chơi một người chơi cục bộ, quá trình triển khai đơn giản hơn so với các hệ thống có máy chủ. Khi xuất bản cho Windows, cần cấu hình export preset trong Godot, chọn biểu tượng nếu có, sau đó tạo tệp thực thi. Khi chạy lần đầu, ứng dụng sẽ tự tạo tệp lưu nếu chưa có. Nếu muốn phát hành bản Web, cần kiểm tra lại kích thước giao diện và khả năng nhập tiếng Việt trong trình duyệt, vì bộ gõ tiếng Việt có thể có hành vi khác giữa môi trường desktop và web.
+
+\end{document}

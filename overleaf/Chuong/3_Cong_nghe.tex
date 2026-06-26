@@ -1,0 +1,54 @@
+\documentclass[../DoAn.tex]{subfiles}
+\begin{document}
+
+Chương này trình bày các công nghệ và nền tảng lý thuyết được sử dụng trong đồ án. Các nội dung được lựa chọn theo nhu cầu trực tiếp của ứng dụng: xây dựng trò chơi 2D, tổ chức mã nguồn, xử lý chuỗi tiếng Việt, sinh bảng ô chữ và lưu dữ liệu cục bộ.
+
+\section{Godot Engine}
+Godot là game engine mã nguồn mở hỗ trợ phát triển trò chơi 2D và 3D, cung cấp hệ thống scene, node, tín hiệu và tài nguyên phục vụ quá trình xây dựng trò chơi \cite{godotDocs}. Trong đồ án này, Godot được dùng để tổ chức màn hình chính, màn hình chơi, các ô chữ, hộp thoại tạm dừng, hộp thoại hoàn thành và các thành phần giao diện khác. Mô hình scene của Godot phù hợp với ứng dụng vì mỗi phần giao diện có thể được tách thành một scene hoặc một node riêng, sau đó kết nối bằng tín hiệu.
+
+Một điểm quan trọng của Godot là mọi thành phần trong giao diện hoặc trong trò chơi đều có thể được biểu diễn dưới dạng node. Node có thể là phần tử hiển thị như \texttt{Control}, \texttt{Label}, \texttt{Button}, \texttt{GridContainer}, hoặc là node logic không trực tiếp hiển thị như \texttt{InputController}. Các node được tổ chức thành cây scene, trong đó node cha quản lý vòng đời và vị trí của node con. Cách tổ chức này phù hợp với trò chơi ô chữ vì bảng chữ, danh sách gợi ý, thanh thông tin, hộp thoại tạm dừng và hộp thoại hoàn thành đều là các cụm giao diện có quan hệ phân cấp rõ ràng.
+
+Trong ứng dụng, scene \texttt{Main.tscn} đóng vai trò điểm vào chính. Scene này chứa \texttt{StartMenu.tscn} và \texttt{GameBoard.tscn}. \texttt{StartMenu.tscn} quản lý phần chọn tài khoản, chọn chủ đề và chọn màn, còn \texttt{GameBoard.tscn} quản lý toàn bộ giao diện khi đang chơi. Cách chia scene này làm cho luồng chuyển đổi giữa menu và trò chơi rõ ràng hơn, đồng thời giúp mã nguồn trong \texttt{main.gd} chỉ tập trung điều phối thay vì trực tiếp dựng toàn bộ giao diện bằng mã.
+
+Godot cũng cung cấp hệ thống signal để các node giao tiếp với nhau theo hướng sự kiện. Trong đồ án, \texttt{UIController} phát signal khi người chơi muốn chơi lại hoặc quay về menu. \texttt{main.gd} lắng nghe các signal này để tạo màn mới hoặc hiển thị lại menu. Cách làm này giảm phụ thuộc trực tiếp giữa màn chơi và màn menu, giúp mỗi thành phần chỉ cần biết sự kiện cần phát ra thay vì biết toàn bộ quy trình xử lý bên ngoài.
+
+\section{GDScript}
+GDScript là ngôn ngữ kịch bản được thiết kế cho Godot, có cú pháp gần với Python và tích hợp trực tiếp với hệ thống node của engine \cite{godotGDScript}. Đồ án sử dụng GDScript cho toàn bộ logic ứng dụng, bao gồm sinh bảng ô chữ, quản lý dữ liệu chủ đề, điều khiển giao diện, tính điểm, xử lý gợi ý và lưu tiến độ. Việc sử dụng GDScript giúp giảm chi phí tích hợp so với việc dùng ngôn ngữ ngoài, đồng thời làm cho mã nguồn dễ liên kết với các scene trong Godot.
+
+GDScript hỗ trợ khai báo lớp bằng \texttt{class\_name}, nhờ đó các lớp như \texttt{BoardGenerator}, \texttt{GameState}, \texttt{SaveManager}, \texttt{WordEntry} và \texttt{VietnameseNormalizer} có thể được sử dụng trực tiếp trong các script khác. Điều này giúp mã nguồn đọc gần với mô hình thiết kế hơn: bộ sinh bảng là một đối tượng riêng, trạng thái trò chơi là một đối tượng riêng, còn giao diện chỉ sử dụng các đối tượng đó thông qua phương thức công khai.
+
+Đồ án sử dụng kết hợp các lớp kế thừa \texttt{RefCounted} và các script gắn với node. Các lớp \texttt{RefCounted} phù hợp với dữ liệu và logic không cần xuất hiện trong cây scene, ví dụ \texttt{BoardGenerator} hoặc \texttt{GameState}. Ngược lại, các script như \texttt{UIController}, \texttt{InputController} và \texttt{TileButton} được gắn với node để nhận sự kiện giao diện và cập nhật hiển thị. Sự phân biệt này giúp tránh việc toàn bộ logic bị đặt vào một script giao diện lớn duy nhất.
+
+\section{Xử lý chuỗi tiếng Việt}
+Tiếng Việt sử dụng bảng chữ cái Latin mở rộng với dấu thanh và các biến thể nguyên âm. Vì vậy, hệ thống cần phân biệt giữa dạng hiển thị của từ, dạng dùng để xếp bảng và dạng dùng để so khớp đáp án. Trong đồ án, một từ được chuẩn hóa về chữ thường, sau đó loại bỏ khoảng trắng để tạo chuỗi xếp trên bảng. Mỗi ký tự được tách thành thông tin gồm ký tự gốc, ký tự cơ sở, biến thể nguyên âm và thanh điệu. Cách biểu diễn này giúp bảng ô chữ giữ đúng chữ có dấu, đồng thời cho phép hệ thống quản lý thông tin tiếng Việt rõ ràng hơn.
+
+Ví dụ, một cụm từ có khoảng trắng khi hiển thị cho người chơi cần được giữ nguyên trong đáp án để người chơi hiểu nghĩa đầy đủ. Tuy nhiên, khi đặt trên bảng, khoảng trắng không tương ứng với một ô chữ nên cần được loại bỏ. Do đó, hệ thống tạo \texttt{puzzle\_word} từ đáp án gốc bằng cách chuẩn hóa và bỏ khoảng trắng. Độ dài của từ trên bảng được tính theo số ký tự của \texttt{puzzle\_word}, không phải theo số ký tự bao gồm khoảng trắng trong đáp án hiển thị.
+
+Việc so khớp đáp án được thực hiện theo hai mức. Mức thứ nhất so sánh trực tiếp đáp án đã chuẩn hóa với từ đúng đã chuẩn hóa. Mức thứ hai so sánh sau khi bỏ khoảng trắng, giúp người chơi có thể nhập cụm từ liền nhau hoặc có khoảng trắng mà vẫn được chấp nhận nếu nội dung ký tự đúng. Cách xử lý này làm giảm lỗi do khác biệt nhập liệu nhưng vẫn giữ yêu cầu người chơi nhập đúng chữ tiếng Việt.
+
+\textbf{[Cần bổ sung: nếu muốn minh họa rõ hơn, thêm bảng ví dụ chuyển đổi từ gốc sang dạng xếp bảng. Ví dụ gồm các cột: Từ gốc, Dạng chuẩn hóa, Dạng xếp bảng, Số ô trên bảng.]}
+
+\section{Sinh bảng ô chữ}
+Bài toán sinh bảng ô chữ trong đồ án được tiếp cận theo hướng heuristic. Hệ thống đặt từ đầu tiên gần trung tâm bảng, sau đó lần lượt xét các từ còn lại và tìm vị trí có thể giao nhau với các từ đã đặt. Mỗi vị trí ứng viên được đánh giá dựa trên số giao điểm, độ gần trung tâm và mức tăng diện tích bao của bảng chữ. Nếu không tìm được vị trí lý tưởng, hệ thống thử phương án dự phòng nhưng vẫn yêu cầu từ mới phải có giao điểm với bảng hiện tại. Cách tiếp cận này không đảm bảo tối ưu toàn cục nhưng phù hợp với yêu cầu của trò chơi: sinh nhanh, bảng đủ gọn và các từ có liên kết với nhau.
+
+Trong quá trình đặt từ, hệ thống cần kiểm tra nhiều điều kiện hợp lệ. Thứ nhất, toàn bộ ký tự của từ phải nằm trong phạm vi bảng. Thứ hai, nếu một ô đã có ký tự thì ký tự mới đặt vào ô đó phải trùng với ký tự hiện có. Thứ ba, các ô liền kề theo hướng vuông góc không được tạo ra các đoạn chữ ngoài ý muốn. Thứ tư, trước và sau từ theo hướng đặt không được có ô chữ khác nối liền, vì điều này có thể làm xuất hiện một từ mới không thuộc danh sách đáp án. Những điều kiện này làm cho bảng sinh ra gần với luật ô chữ truyền thống hơn.
+
+Hàm đánh giá vị trí đặt từ không chỉ ưu tiên số giao điểm. Nếu chỉ ưu tiên giao điểm, bảng có thể bị kéo dài hoặc lệch quá xa tâm. Vì vậy, hệ thống kết hợp thêm khoảng cách tới tâm bảng và diện tích bao của các từ đã đặt. Vị trí nào tạo nhiều giao điểm, gần trung tâm và làm tăng diện tích bao ít hơn sẽ được ưu tiên. Cách chấm điểm này là một heuristic đơn giản nhưng có tác dụng thực tế trong việc tạo bảng gọn.
+
+\textbf{[Cần bổ sung: vẽ lưu đồ thuật toán sinh bảng. Lưu đồ nên có các bước: tạo lưới rỗng, đặt từ đầu tiên, duyệt từng từ còn lại, tìm vị trí giao nhau, kiểm tra hợp lệ, chấm điểm vị trí, đặt từ, loại từ cô lập, trả về bảng.]}
+
+\section{Lưu dữ liệu cục bộ}
+Ứng dụng sử dụng tệp JSON trong vùng dữ liệu người dùng của Godot để lưu hồ sơ người chơi, tổng số sao, điểm cao nhất và tiến độ từng màn. JSON được chọn vì cấu trúc dữ liệu của trò chơi chủ yếu là từ điển và danh sách, dễ ánh xạ sang định dạng văn bản. Khi đọc dữ liệu, hệ thống kiểm tra kiểu dữ liệu và chuẩn hóa về cấu trúc mặc định nếu phát hiện dữ liệu thiếu hoặc không hợp lệ. Cách làm này giúp ứng dụng đơn giản nhưng vẫn đủ ổn định cho chế độ chơi cục bộ.
+
+Mỗi hồ sơ người chơi có một mã định danh, tên hiển thị và phần bản ghi tiến độ riêng. Phần tiến độ gồm điểm cao nhất, tổng số sao hiện có, số sao đã kiếm, số sao đã dùng, số lượt chơi và danh sách tiến độ theo từng màn. Với từng màn, hệ thống lưu trạng thái đã hoàn thành, số sao cao nhất, điểm cao nhất và thời gian tốt nhất. Cấu trúc này đủ cho yêu cầu hiện tại, đồng thời có thể mở rộng thêm các trường khác như số lần chơi từng màn hoặc ngày hoàn thành gần nhất.
+
+Việc lưu dữ liệu cục bộ có ưu điểm là đơn giản, không yêu cầu tài khoản trực tuyến và không phụ thuộc vào máy chủ. Hạn chế của cách làm này là dữ liệu chỉ tồn tại trên một thiết bị, khó đồng bộ nếu người chơi sử dụng nhiều máy. Trong phạm vi đồ án, lựa chọn lưu cục bộ là phù hợp vì mục tiêu chính là xây dựng nguyên mẫu trò chơi hoạt động ổn định trên máy cá nhân.
+
+\section{LaTeX và Overleaf}
+Ngoài các công nghệ dùng để xây dựng trò chơi, đồ án sử dụng LaTeX và Overleaf để biên soạn báo cáo. LaTeX phù hợp với báo cáo kỹ thuật vì hỗ trợ cấu trúc chương mục, danh mục hình, danh mục bảng, tài liệu tham khảo và định dạng nhất quán. Overleaf giúp biên dịch tài liệu trực tuyến và dễ chia sẻ bản báo cáo với giảng viên hướng dẫn. Trong quá trình viết, nội dung báo cáo được chia thành nhiều file theo từng chương để dễ quản lý và chỉnh sửa.
+
+\textbf{[Cần bổ sung: nếu báo cáo yêu cầu ghi rõ môi trường soạn thảo, điền thêm phiên bản VS Code, MiKTeX hoặc cách bạn dùng Overleaf.]}
+
+Các công nghệ và kỹ thuật trên tạo thành nền tảng cho phần thiết kế và triển khai ứng dụng. Chương tiếp theo trình bày cách các thành phần này được tổ chức thành kiến trúc cụ thể của trò chơi.
+
+\end{document}

@@ -1,0 +1,99 @@
+\documentclass[../DoAn.tex]{subfiles}
+\begin{document}
+
+Chương này trình bày các giải pháp và đóng góp nổi bật của đồ án. Các nội dung được lựa chọn là những phần có ảnh hưởng trực tiếp tới khả năng chơi được của sản phẩm: xử lý từ tiếng Việt, sinh bảng ô chữ, tổ chức màn chơi theo chủ đề và lưu tiến độ người chơi.
+
+\section{Xử lý từ tiếng Việt trong trò chơi ô chữ}
+Vấn đề đầu tiên của đồ án là biểu diễn từ tiếng Việt sao cho vừa phù hợp với bảng ô chữ, vừa giữ được dạng đáp án tự nhiên cho người chơi. Một đáp án như một cụm từ tiếng Việt có thể chứa khoảng trắng, trong khi bảng ô chữ cần xếp từng ký tự liên tiếp. Ngoài ra, các chữ cái có dấu cần được giữ nguyên để người chơi nhìn thấy đúng đáp án.
+
+Giải pháp của đồ án là tách mỗi từ thành hai dạng. Dạng thứ nhất là từ đầy đủ sau khi chuẩn hóa chữ thường, dùng để hiển thị và so khớp đáp án. Dạng thứ hai là chuỗi xếp bảng, được tạo bằng cách loại bỏ khoảng trắng. Mỗi ký tự trong chuỗi xếp bảng được chuyển thành thông tin gồm ký tự gốc, ký tự cơ sở, biến thể nguyên âm và thanh điệu. Nhờ đó, hệ thống có thể đặt đúng chữ có dấu trên bảng, đồng thời chấp nhận đáp án người chơi nhập theo dạng có hoặc không có khoảng trắng.
+
+Kết quả của giải pháp này là trò chơi có thể xử lý các từ đơn và cụm từ tiếng Việt trong cùng một cơ chế. Người chơi nhập đáp án theo cách tự nhiên, trong khi bộ sinh bảng vẫn làm việc với chuỗi ký tự liên tục.
+
+Điểm đáng chú ý của giải pháp là phần xử lý tiếng Việt không bị trộn trực tiếp vào thuật toán sinh bảng. Bộ sinh bảng chỉ cần biết một \texttt{WordEntry} có danh sách ký tự và độ dài tương ứng. Việc tạo danh sách ký tự, xử lý dấu và chuẩn hóa đáp án được thực hiện trước đó bởi các lớp tiện ích. Điều này giúp thuật toán sinh bảng có thể tập trung vào bài toán không gian hai chiều, trong khi logic ngôn ngữ được gom vào một nhóm thành phần riêng.
+
+Một lợi ích khác là hệ thống có khả năng mở rộng cách so khớp đáp án trong tương lai. Hiện tại, đáp án được chấp nhận khi khớp đầy đủ hoặc khớp sau khi bỏ khoảng trắng. Nếu cần hỗ trợ thêm chế độ nhập không dấu hoặc chế độ luyện tập dễ hơn, có thể bổ sung vào lớp chuẩn hóa mà không cần thay đổi toàn bộ giao diện hoặc bộ sinh bảng. Đây là một ví dụ cho việc tách trách nhiệm giúp mã nguồn dễ phát triển tiếp.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3.2cm}|p{4.2cm}|p{6.2cm}|}
+\hline
+\textbf{Dạng dữ liệu} & \textbf{Ví dụ} & \textbf{Mục đích sử dụng} \\ \hline
+Từ hiển thị & \texttt{bánh trung thu} & Dùng trong đáp án, lịch sử đoán và dữ liệu nội dung. \\ \hline
+Dạng xếp bảng & \texttt{bánhtrungthu} & Dùng để tính số ô và đặt ký tự lên bảng. \\ \hline
+Danh sách ký tự & \texttt{b, á, n, h, ...} & Dùng để so khớp giao điểm giữa các từ. \\ \hline
+Thông tin ký tự & Ký tự gốc, ký tự cơ sở, biến thể, thanh điệu & Dùng để lưu đúng chữ tiếng Việt trong từng ô. \\ \hline
+\end{tabular}
+\caption{Các dạng biểu diễn từ tiếng Việt trong hệ thống}
+\label{table:vietnamese_word_representation}
+\end{table}
+
+\section{Sinh bảng ô chữ tự động}
+Nếu tạo thủ công từng bảng ô chữ, việc mở rộng số lượng chủ đề và màn chơi sẽ tốn nhiều thời gian. Vì vậy, đồ án xây dựng bộ sinh bảng tự động từ danh sách từ của mỗi màn. Thách thức của bài toán là phải đặt được nhiều từ vào bảng, bảo đảm các từ không chồng sai ký tự, không nối liền không hợp lệ và có giao điểm để tạo cảm giác ô chữ.
+
+Bộ sinh bảng sử dụng chiến lược đặt từ theo từng bước. Từ đầu tiên được đặt nằm ngang gần trung tâm. Với mỗi từ tiếp theo, hệ thống tìm các ký tự trùng với những từ đã đặt, thử đặt theo hướng vuông góc và kiểm tra điều kiện hợp lệ. Mỗi vị trí hợp lệ được chấm điểm dựa trên số giao điểm, độ gần trung tâm và mức tăng diện tích bao của toàn bộ bảng chữ. Khi không tìm được vị trí theo cách chính, hệ thống dùng bước tìm kiếm dự phòng trên toàn bảng nhưng vẫn yêu cầu có giao điểm.
+
+Giải pháp này không phải thuật toán tối ưu toàn cục, nhưng phù hợp với quy mô ứng dụng vì thời gian sinh nhanh, mã nguồn dễ hiểu và chất lượng bảng đủ dùng cho các màn chơi nhỏ. Đây là lựa chọn cân bằng giữa độ phức tạp thuật toán và yêu cầu thực tế của sản phẩm.
+
+Trong thiết kế ban đầu của nhiều bài toán ô chữ, một phương án có thể là thử quay lui toàn bộ để tìm cách đặt được nhiều từ nhất. Tuy nhiên, với danh sách từ tiếng Việt theo chủ đề, số lượng từ có thể khá lớn và độ dài từ không đồng đều. Nếu áp dụng quay lui đầy đủ, thời gian sinh có thể tăng nhanh và gây cảm giác chờ khi người chơi bắt đầu màn. Đồ án vì vậy chọn hướng heuristic nhiều lần thử. Mỗi lần thử thay đổi thứ tự từ theo một seed ổn định, sau đó lấy kết quả đặt được nhiều từ nhất. Cách này tăng khả năng tìm được bảng tốt hơn một lần thử duy nhất nhưng vẫn giữ quá trình sinh trong giới hạn chấp nhận được.
+
+Một quyết định quan trọng là loại bỏ các từ cô lập sau khi sinh. Trong trò chơi ô chữ, các từ nên có liên kết với nhau để người chơi có thể suy luận từ giao điểm. Nếu một từ được đặt mà không giao với từ nào khác, nó giống một câu hỏi riêng biệt hơn là một phần của bảng ô chữ. Vì vậy, sau khi đặt từ, hệ thống kiểm tra các từ không có giao điểm và dựng lại bảng chỉ với các từ liên kết. Điều này có thể làm giảm số từ cuối cùng của màn, nhưng giúp chất lượng bảng phù hợp hơn với mục tiêu trò chơi.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3.3cm}|p{5.3cm}|p{5.2cm}|}
+\hline
+\textbf{Tiêu chí} & \textbf{Cách đánh giá trong thuật toán} & \textbf{Ý nghĩa} \\ \hline
+Số giao điểm & Đếm số ô đã có ký tự trùng với từ mới & Tăng tính liên kết giữa các từ trong bảng \\ \hline
+Độ gần trung tâm & Tính khoảng cách điểm giữa của từ tới tâm bảng & Giúp bảng không lệch quá xa một phía \\ \hline
+Diện tích bao & Tính phần diện tích tăng thêm sau khi đặt từ & Ưu tiên bảng gọn và dễ hiển thị \\ \hline
+Tính hợp lệ & Kiểm tra biên bảng, ký tự xung đột và ô kề & Tránh tạo từ sai hoặc va chạm không hợp lệ \\ \hline
+\end{tabular}
+\caption{Các tiêu chí đánh giá vị trí đặt từ}
+\label{table:placement_scoring}
+\end{table}
+
+\textbf{[Cần bổ sung: nếu có thời gian chạy thử, hãy thêm bảng đo số từ đầu vào, số từ đặt được và thời gian sinh cho một vài chủ đề.]}
+
+\section{Tổ chức nội dung theo chủ đề và màn chơi}
+Một yêu cầu quan trọng của trò chơi là người chơi cần có cảm giác tiến triển thay vì chỉ giải một bảng đơn lẻ. Đồ án giải quyết yêu cầu này bằng cách tổ chức dữ liệu thành các chủ đề như phòng ngủ, thời gian, nhà tắm, trò chơi dân gian, nhạc cụ và nhiều nhóm từ khác. Mỗi chủ đề được chia thành một số màn, mỗi màn chứa một tập từ đủ nhỏ để bảng không quá dày và người chơi có thể hoàn thành trong thời gian hợp lý.
+
+Việc chia màn được thực hiện tự động từ danh sách từ của chủ đề. Các từ được sắp xếp ưu tiên theo độ dài ở lần thử đầu tiên, sau đó phân bổ vào các nhóm màn. Khi người chơi chọn một màn, hệ thống mới sinh bảng cho màn đó. Cách làm này giúp giảm thời gian xử lý khi vào menu, đồng thời làm cho quá trình chơi theo chủ đề rõ ràng hơn.
+
+Cách tổ chức theo chủ đề cũng giúp nội dung gợi ý có ngữ cảnh hơn. Cùng một từ có thể mang nghĩa khác nhau trong các chủ đề khác nhau, vì vậy hệ thống hỗ trợ gợi ý đặc thù theo chủ đề bên cạnh gợi ý mặc định. Ví dụ, một từ xuất hiện trong chủ đề lễ hội có thể cần gợi ý khác với khi xuất hiện trong chủ đề không gian hoặc đồ vật. Việc gắn chủ đề cho từ giúp câu gợi ý tự nhiên hơn và giảm khả năng gây nhập nhằng.
+
+Một vấn đề khác là độ dài của mỗi màn. Nếu một màn có quá ít từ, trò chơi kết thúc quá nhanh và bảng thiếu liên kết. Nếu một màn có quá nhiều từ, bảng có thể khó sinh, giao diện nhiều gợi ý và người chơi dễ mệt. Đồ án đặt ngưỡng tối thiểu cho số từ trong một màn và giới hạn kích thước bảng, từ đó buộc dữ liệu nội dung phải được chia thành các cụm vừa phải. Cách làm này chưa phải cơ chế cân bằng độ khó hoàn chỉnh, nhưng là nền tảng để phát triển hệ thống độ khó trong tương lai.
+
+\textbf{[Cần bổ sung: thống kê số chủ đề và tổng số từ sau khi chốt dữ liệu cuối cùng. Nên thêm một bảng liệt kê 5--10 chủ đề tiêu biểu và số từ tương ứng.]}
+
+\section{Lưu tiến độ và cơ chế sao}
+Để tăng tính liên tục của trò chơi, đồ án bổ sung hệ thống tài khoản cục bộ và lưu tiến độ theo từng tài khoản. Mỗi tài khoản có tổng số sao, điểm cao nhất, số lượt chơi và tiến độ từng màn. Khi hoàn thành màn, hệ thống ghi nhận số sao cao nhất, điểm cao nhất và thời gian tốt nhất.
+
+Cơ chế sao được dùng cho cả phần thưởng và chi phí gợi ý. Người chơi có một lượng sao ban đầu, có thể dùng sao để mở một chữ hoặc mở cả từ. Khi hoàn thành màn, người chơi nhận sao dựa trên các nhiệm vụ như hoàn thành màn, đạt điểm mục tiêu, hạn chế số gợi ý, đạt chuỗi đúng hoặc hoàn thành trong thời gian yêu cầu. Cơ chế này tạo thêm mục tiêu phụ ngoài việc đoán hết từ, giúp màn chơi có động lực lặp lại.
+
+Hệ thống nhiệm vụ được sinh theo từng màn dựa trên trạng thái của màn chơi. Một nhiệm vụ luôn là hoàn thành màn, một nhiệm vụ liên quan tới điểm mục tiêu, và nhiệm vụ còn lại được chọn trong một nhóm nhiệm vụ phụ. Nhóm nhiệm vụ phụ có thể là giới hạn số lần dùng gợi ý, đoán đúng liên tiếp, hoàn thành trong thời gian nhất định, không dùng gợi ý mở cả từ hoặc đạt tỉ lệ đúng tối thiểu. Cách thiết kế này làm cho mỗi lượt chơi có thêm tiêu chí đánh giá ngoài kết quả đúng/sai.
+
+Việc dùng sao cho gợi ý cũng tạo ra một vòng lặp tài nguyên đơn giản. Người chơi có thể dùng sao để vượt qua màn khó, nhưng nếu dùng quá nhiều gợi ý thì khó đạt một số nhiệm vụ phụ. Khi hoàn thành màn tốt, người chơi nhận thêm sao để dùng cho các màn sau. Vòng lặp này không phức tạp như hệ thống kinh tế trong các trò chơi lớn, nhưng đủ để tạo quyết định nhỏ cho người chơi: tự giải để giữ sao hay dùng gợi ý để hoàn thành màn.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{4cm}|p{4.5cm}|p{5.2cm}|}
+\hline
+\textbf{Loại nhiệm vụ} & \textbf{Điều kiện} & \textbf{Tác dụng trong trải nghiệm} \\ \hline
+Hoàn thành màn & Tất cả từ trong màn được giải đúng & Bảo đảm mục tiêu cơ bản của màn chơi \\ \hline
+Điểm mục tiêu & Điểm đạt mức yêu cầu & Khuyến khích giải nhanh và hạn chế phụ thuộc gợi ý \\ \hline
+Giới hạn gợi ý & Số gợi ý đã dùng không vượt ngưỡng & Khuyến khích người chơi tự suy luận \\ \hline
+Chuỗi đúng & Đạt số từ đúng liên tiếp theo yêu cầu & Khuyến khích nhập đáp án cẩn thận \\ \hline
+Thời gian & Hoàn thành trong thời gian mục tiêu & Tạo thử thách tốc độ cho màn đã quen \\ \hline
+Độ chính xác & Tỉ lệ đáp án đúng đạt ngưỡng & Hạn chế đoán thử quá nhiều \\ \hline
+\end{tabular}
+\caption{Các nhóm nhiệm vụ trong màn chơi}
+\label{table:mission_types}
+\end{table}
+
+\section{Kết chương}
+Các giải pháp trên tạo nên đóng góp chính của đồ án: một quy trình xử lý từ tiếng Việt phù hợp với trò chơi ô chữ, một bộ sinh bảng tự động đủ đơn giản để bảo trì, một mô hình tổ chức chủ đề--màn chơi rõ ràng và một cơ chế lưu tiến độ cục bộ. Những đóng góp này giúp sản phẩm không chỉ là một giao diện nhập đáp án, mà là một trò chơi hoàn chỉnh ở mức nguyên mẫu.
+
+\textbf{[Cần bổ sung: nếu có số liệu đánh giá sau khi chạy thử, thêm vào chương này hoặc Chương 4. Ví dụ: số chủ đề, tổng số từ, số màn sinh được, tỉ lệ màn sinh đủ từ, thời gian sinh trung bình.]}
+
+\end{document}

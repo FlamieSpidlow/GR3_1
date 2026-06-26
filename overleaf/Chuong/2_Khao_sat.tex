@@ -1,0 +1,175 @@
+\documentclass[../DoAn.tex]{subfiles}
+\begin{document}
+
+Chương này trình bày khảo sát hiện trạng và phân tích yêu cầu cho trò chơi ô chữ tiếng Việt. Nội dung chương tập trung làm rõ nhu cầu xây dựng sản phẩm, các chức năng chính cần có và các ràng buộc phi chức năng ảnh hưởng trực tiếp tới thiết kế.
+
+\section{Khảo sát hiện trạng}
+\label{section:2.1}
+Các trò chơi ô chữ phổ biến thường được thiết kế xoay quanh tiếng Anh hoặc các ngôn ngữ không dấu. Với những trò chơi này, mỗi ô trên bảng thường tương ứng trực tiếp với một chữ cái, người chơi nhập từng ký tự hoặc nhập toàn bộ đáp án, sau đó hệ thống so sánh với từ đích. Khi áp dụng cho tiếng Việt, cách tiếp cận này gặp khó khăn do một chữ cái có thể mang dấu thanh hoặc biến thể nguyên âm như ``ă'', ``â'', ``ê'', ``ô'', ``ơ'', ``ư''. Ngoài ra, nhiều đáp án tiếng Việt là cụm từ gồm nhiều tiếng, ví dụ có khoảng trắng trong cách viết thông thường nhưng lại cần được xếp liền nhau trên bảng ô chữ.
+
+Một số sản phẩm học từ vựng tiếng Việt hiện có tập trung vào flashcard, câu hỏi trắc nghiệm hoặc trò chơi ghép chữ đơn giản. Các sản phẩm này hỗ trợ luyện từ nhưng chưa nhấn mạnh trải nghiệm ô chữ giao nhau giữa nhiều từ. Từ khảo sát đó, đồ án xác định nhu cầu xây dựng một trò chơi có khả năng tổ chức từ vựng theo chủ đề, sinh bảng chơi tự động, kiểm tra đáp án tiếng Việt đầy đủ và lưu lại tiến độ của người chơi.
+
+Đối với người học hoặc người chơi phổ thông, một trò chơi ô chữ tiếng Việt cần đáp ứng đồng thời hai nhóm yêu cầu. Nhóm thứ nhất là yêu cầu nội dung, bao gồm từ vựng đủ đa dạng, gợi ý dễ hiểu, chủ đề gần gũi và độ dài từ phù hợp với kích thước bảng. Nhóm thứ hai là yêu cầu tương tác, bao gồm thao tác chọn gợi ý nhanh, nhập đáp án thuận tiện, phản hồi đúng sai rõ ràng và khả năng quay lại chơi tiếp. Nếu thiếu một trong hai nhóm yêu cầu này, trò chơi dễ trở thành một bảng chữ tĩnh hoặc một danh sách câu hỏi rời rạc, không tạo được trải nghiệm chơi liên tục.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3.2cm}|p{5.2cm}|p{5.2cm}|}
+\hline
+\textbf{Nhóm sản phẩm} & \textbf{Ưu điểm} & \textbf{Hạn chế đối với đề tài} \\ \hline
+Ô chữ truyền thống trên giấy & Dễ hiểu, không cần thiết bị, phù hợp với hoạt động học tập cơ bản & Không tự động kiểm tra đáp án, không lưu tiến độ, khó cá nhân hóa nội dung và khó sinh nhiều màn chơi \\ \hline
+Trò chơi ô chữ tiếng Anh & Có nhiều cơ chế chơi hoàn thiện, giao diện quen thuộc, luật chơi rõ ràng & Không xử lý trực tiếp đặc thù dấu tiếng Việt và cụm từ có khoảng trắng \\ \hline
+Ứng dụng flashcard từ vựng & Phù hợp học nghĩa của từ, dễ tổ chức theo chủ đề & Ít yếu tố giao nhau giữa các từ, không tạo được bài toán suy luận dạng ô chữ \\ \hline
+Trò chơi ghép chữ đơn giản & Tương tác nhanh, dễ chơi trên thiết bị cá nhân & Thường chỉ xử lý từ đơn hoặc ký tự rời, chưa nhấn mạnh gợi ý ngữ nghĩa và tiến độ theo màn \\ \hline
+\end{tabular}
+\caption{So sánh một số hướng tiếp cận liên quan}
+\label{table:related_products}
+\end{table}
+
+Từ bảng so sánh trên, đồ án lựa chọn hướng xây dựng một trò chơi ô chữ chuyên biệt cho tiếng Việt thay vì chỉ mô phỏng lại trò chơi ô chữ tiếng Anh. Trọng tâm của hệ thống là xử lý từ tiếng Việt đúng cách, tổ chức dữ liệu theo chủ đề và tạo trải nghiệm chơi có tiến độ. Do phạm vi đồ án là một sản phẩm ứng dụng, các yêu cầu được ưu tiên theo mức độ ảnh hưởng tới khả năng chơi được của nguyên mẫu.
+
+\section{Tổng quan chức năng}
+\label{section:2.2}
+Tác nhân chính của hệ thống là người chơi. Người chơi có thể chọn hoặc tạo tài khoản cục bộ, chọn chủ đề, chọn màn chơi, xem danh sách gợi ý, nhập đáp án, sử dụng sao để nhận gợi ý, xem điểm số và theo dõi tiến độ hoàn thành. Hệ thống đóng vai trò quản lý dữ liệu chủ đề, sinh bảng ô chữ, kiểm tra đáp án, tính điểm, cập nhật nhiệm vụ và lưu dữ liệu tiến độ.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3.2cm}|p{10.8cm}|}
+\hline
+\textbf{Tác nhân} & \textbf{Mô tả vai trò} \\ \hline
+Người chơi & Sử dụng ứng dụng để chọn tài khoản, chọn chủ đề, giải ô chữ, dùng gợi ý, xem kết quả và quay lại các màn đã chơi. Đây là tác nhân trực tiếp tương tác với toàn bộ giao diện trò chơi. \\ \hline
+Hệ thống trò chơi & Tự động sinh bảng, hiển thị gợi ý, kiểm tra đáp án, tính điểm, quản lý sao, sinh nhiệm vụ, lưu tiến độ và khôi phục dữ liệu khi người chơi mở lại ứng dụng. \\ \hline
+\end{tabular}
+\caption{Tác nhân của hệ thống}
+\label{table:actors}
+\end{table}
+
+\subsection{Biểu đồ use case tổng quát}
+\label{subsection:2.2.1}
+Ở mức tổng quát, hệ thống có các nhóm use case chính: quản lý tài khoản cục bộ, chọn nội dung chơi, giải ô chữ, sử dụng gợi ý, xem kết quả và lưu tiến độ. Trong nhóm quản lý tài khoản, người chơi có thể chọn tài khoản đã có hoặc tạo tài khoản mới. Trong nhóm chọn nội dung chơi, người chơi chọn chủ đề và màn. Trong nhóm giải ô chữ, người chơi chọn gợi ý, nhập đáp án và nhận phản hồi đúng sai. Trong nhóm kết quả, hệ thống hiển thị số sao đạt được, điểm, thời gian và tiến độ màn chơi.
+
+\textbf{[Cần bổ sung: vẽ biểu đồ use case tổng quát tại đây. Biểu đồ nên có tác nhân ``Người chơi'' kết nối tới các use case: Quản lý tài khoản, Chọn chủ đề, Chọn màn chơi, Xem gợi ý, Nhập đáp án, Sử dụng gợi ý, Xem kết quả, Chơi lại, Quay về menu. Có thể thêm tác nhân phụ ``Hệ thống'' hoặc ghi chú hệ thống tự thực hiện Lưu tiến độ và Sinh bảng ô chữ.]}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{4cm}|p{9.8cm}|}
+\hline
+\textbf{Use case} & \textbf{Mô tả ngắn gọn} \\ \hline
+Quản lý tài khoản & Người chơi chọn tài khoản cục bộ, tạo tài khoản mới hoặc xóa tài khoản không còn sử dụng. \\ \hline
+Chọn chủ đề & Người chơi xem danh sách chủ đề, mỗi chủ đề hiển thị số màn đã hoàn thành trên tổng số màn. \\ \hline
+Chọn màn chơi & Người chơi mở danh sách màn của chủ đề, xem số từ và trạng thái hoàn thành, sau đó bắt đầu màn. \\ \hline
+Giải ô chữ & Người chơi chọn gợi ý, nhập đáp án và nhận phản hồi đúng sai từ hệ thống. \\ \hline
+Sử dụng gợi ý & Người chơi dùng sao để mở một chữ hoặc mở toàn bộ từ đang chọn. \\ \hline
+Xem kết quả & Khi hoàn thành màn, người chơi xem điểm, số sao, thời gian, tỉ lệ đúng và nhiệm vụ đạt được. \\ \hline
+Lưu tiến độ & Hệ thống ghi nhận tiến độ hoàn thành, điểm cao nhất, sao cao nhất và thời gian tốt nhất. \\ \hline
+\end{tabular}
+\caption{Danh sách use case tổng quát}
+\label{table:usecase_overview}
+\end{table}
+
+\subsection{Quy trình chơi}
+\label{subsection:2.2.2}
+Quy trình nghiệp vụ chính của ứng dụng bắt đầu từ màn hình chính. Người chơi chọn tài khoản cục bộ, bấm chơi, chọn chủ đề, sau đó chọn một màn trong danh sách màn của chủ đề đó. Khi màn chơi bắt đầu, hệ thống tạo trạng thái chơi từ bảng ô chữ đã sinh, hiển thị các số gợi ý và cho phép người chơi nhập đáp án. Nếu đáp án đúng, hệ thống mở các ô tương ứng, cộng điểm và cập nhật tiến độ. Nếu người chơi gặp khó khăn, họ có thể dùng sao để mở một chữ hoặc mở cả từ. Khi tất cả các từ được hoàn thành, hệ thống tính số sao nhiệm vụ, lưu kết quả và hiển thị hộp thoại hoàn thành.
+
+\textbf{[Cần bổ sung: vẽ biểu đồ hoạt động cho quy trình chơi tại đây. Các bước chính nên là: Mở game, Chọn tài khoản, Chọn chủ đề, Chọn màn, Sinh bảng, Chọn gợi ý, Nhập đáp án, Kiểm tra đáp án, Nếu đúng thì mở từ và cộng điểm, Nếu sai thì cho nhập lại, Nếu đủ sao thì dùng gợi ý, Khi hoàn thành thì lưu tiến độ và hiển thị kết quả.]}
+
+\section{Đặc tả chức năng}
+\label{section:2.3}
+\subsection{Chọn chủ đề và màn chơi}
+Use case này cho phép người chơi đi từ màn hình chính tới danh sách chủ đề và danh sách màn chơi. Tiền điều kiện là ứng dụng đã khởi động và dữ liệu chủ đề hợp lệ. Luồng chính gồm các bước: người chơi bấm nút chơi, hệ thống hiển thị danh sách chủ đề kèm tiến độ, người chơi chọn một chủ đề, hệ thống hiển thị các màn thuộc chủ đề đó, người chơi chọn màn và hệ thống khởi tạo trò chơi. Hậu điều kiện là màn chơi được hiển thị với bảng chữ, gợi ý và trạng thái ban đầu.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3.2cm}|p{10.8cm}|}
+\hline
+\textbf{Thuộc tính} & \textbf{Nội dung} \\ \hline
+Tên use case & Chọn chủ đề và màn chơi \\ \hline
+Tác nhân & Người chơi \\ \hline
+Tiền điều kiện & Ứng dụng đã khởi động, dữ liệu chủ đề có ít nhất một chủ đề hợp lệ. \\ \hline
+Luồng chính & Người chơi bấm Chơi; hệ thống hiển thị danh sách chủ đề; người chơi chọn chủ đề; hệ thống hiển thị danh sách màn; người chơi chọn màn; hệ thống sinh bảng và chuyển sang màn chơi. \\ \hline
+Luồng phát sinh & Nếu không có chủ đề hợp lệ, hệ thống vô hiệu hóa nút bắt đầu và hiển thị trạng thái không có chủ đề. Nếu màn không sinh đủ số từ tối thiểu, hệ thống không bắt đầu màn và báo lỗi trong quá trình phát triển. \\ \hline
+Hậu điều kiện & Màn chơi được khởi tạo, bảng chữ và danh sách gợi ý được hiển thị. \\ \hline
+\end{tabular}
+\caption{Đặc tả use case chọn chủ đề và màn chơi}
+\label{table:uc_select_stage}
+\end{table}
+
+\subsection{Nhập đáp án}
+Use case này cho phép người chơi giải một từ trong bảng. Tiền điều kiện là màn chơi đang hoạt động và người chơi đã chọn một gợi ý. Người chơi nhập đáp án vào ô nhập liệu và bấm nút đoán. Hệ thống chuẩn hóa đáp án, so sánh với từ đích, sau đó phản hồi đúng hoặc sai. Nếu đúng, hệ thống mở toàn bộ chữ của từ, cộng điểm theo độ dài và thời gian giải, đồng thời cập nhật trạng thái hoàn thành của từ.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3.2cm}|p{10.8cm}|}
+\hline
+\textbf{Thuộc tính} & \textbf{Nội dung} \\ \hline
+Tên use case & Nhập đáp án \\ \hline
+Tác nhân & Người chơi \\ \hline
+Tiền điều kiện & Người chơi đang ở màn chơi và đã chọn một gợi ý chưa hoàn thành. \\ \hline
+Luồng chính & Người chơi nhập đáp án; hệ thống loại bỏ khoảng trắng thừa và chuẩn hóa chuỗi; hệ thống so sánh với đáp án đúng; nếu đúng, hệ thống mở từ, cộng điểm, cập nhật thống kê và lịch sử đoán. \\ \hline
+Luồng phát sinh & Nếu chưa chọn gợi ý, hệ thống yêu cầu chọn gợi ý. Nếu ô nhập rỗng, hệ thống yêu cầu nhập từ đoán. Nếu đáp án sai, hệ thống tăng số lần đoán, ghi lịch sử và cho phép thử lại. \\ \hline
+Hậu điều kiện & Từ được hoàn thành nếu đáp án đúng; trạng thái điểm, tiến độ và lịch sử đoán được cập nhật. \\ \hline
+\end{tabular}
+\caption{Đặc tả use case nhập đáp án}
+\label{table:uc_guess}
+\end{table}
+
+\subsection{Sử dụng gợi ý}
+Use case này hỗ trợ người chơi khi không tìm được đáp án. Tiền điều kiện là người chơi đã chọn một từ và còn đủ sao. Người chơi chọn mở một chữ hoặc mở cả từ. Hệ thống kiểm tra số sao, trừ sao nếu đủ, sau đó mở ký tự hoặc từ tương ứng. Nếu thao tác không tạo thay đổi, hệ thống hoàn lại sao. Hậu điều kiện là bảng chữ được cập nhật và số sao hiện tại thay đổi tương ứng.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3.2cm}|p{10.8cm}|}
+\hline
+\textbf{Thuộc tính} & \textbf{Nội dung} \\ \hline
+Tên use case & Sử dụng gợi ý \\ \hline
+Tác nhân & Người chơi \\ \hline
+Tiền điều kiện & Người chơi đã chọn một gợi ý và tài khoản hiện tại còn đủ sao để dùng loại gợi ý tương ứng. \\ \hline
+Luồng chính & Người chơi bấm mở một chữ hoặc mở cả từ; hệ thống kiểm tra số sao; hệ thống trừ sao; hệ thống mở chữ hoặc từ; giao diện cập nhật bảng, gợi ý và số sao. \\ \hline
+Luồng phát sinh & Nếu người chơi chưa chọn gợi ý, hệ thống yêu cầu chọn gợi ý. Nếu không đủ sao, hệ thống hiển thị thông báo không đủ sao. Nếu từ đã được mở hết, hệ thống hoàn lại sao. \\ \hline
+Hậu điều kiện & Một phần hoặc toàn bộ đáp án được mở, số sao và số lần dùng gợi ý được cập nhật. \\ \hline
+\end{tabular}
+\caption{Đặc tả use case sử dụng gợi ý}
+\label{table:uc_hint}
+\end{table}
+
+\subsection{Lưu tiến độ}
+Use case này được thực hiện tự động khi người chơi hoàn thành một màn. Hệ thống ghi nhận màn đã hoàn thành, số sao cao nhất, điểm cao nhất và thời gian tốt nhất vào tệp dữ liệu cục bộ. Dữ liệu được phân tách theo tài khoản để nhiều người chơi trên cùng máy có thể giữ tiến độ riêng.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3.2cm}|p{10.8cm}|}
+\hline
+\textbf{Thuộc tính} & \textbf{Nội dung} \\ \hline
+Tên use case & Lưu tiến độ \\ \hline
+Tác nhân & Hệ thống trò chơi \\ \hline
+Tiền điều kiện & Người chơi hoàn thành toàn bộ từ của màn chơi hiện tại. \\ \hline
+Luồng chính & Hệ thống tính số sao nhiệm vụ; cập nhật tổng sao; tăng số lượt chơi; ghi trạng thái hoàn thành của màn; lưu số sao cao nhất, điểm cao nhất và thời gian tốt nhất. \\ \hline
+Luồng phát sinh & Nếu tệp lưu chưa tồn tại, hệ thống tạo cấu trúc dữ liệu mặc định. Nếu dữ liệu cũ không hợp lệ, hệ thống chuẩn hóa lại về cấu trúc hợp lệ. \\ \hline
+Hậu điều kiện & Tệp tiến độ cục bộ được cập nhật theo tài khoản hiện tại. \\ \hline
+\end{tabular}
+\caption{Đặc tả use case lưu tiến độ}
+\label{table:uc_save}
+\end{table}
+
+\section{Yêu cầu phi chức năng}
+\label{section:2.4}
+Ứng dụng cần có giao diện dễ sử dụng, các nút và thông tin trạng thái phải rõ ràng trên màn hình máy tính phổ thông. Bảng chữ cần tự điều chỉnh kích thước ô để hạn chế tràn khỏi vùng hiển thị. Thời gian sinh màn cần đủ nhanh để người chơi không phải chờ lâu khi bắt đầu một màn. Mã nguồn cần được chia thành các thành phần có trách nhiệm rõ ràng như sinh bảng, quản lý chủ đề, quản lý trạng thái, điều khiển giao diện và lưu dữ liệu. Dữ liệu tiến độ cần được lưu cục bộ ổn định và có khả năng phục hồi về mặc định nếu tệp lưu không hợp lệ.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3.2cm}|p{10.8cm}|}
+\hline
+\textbf{Yêu cầu} & \textbf{Mô tả} \\ \hline
+Dễ sử dụng & Người chơi mới cần hiểu được luồng chơi qua các nút chính: Chơi, chọn chủ đề, chọn màn, chọn gợi ý và đoán đáp án. \\ \hline
+Hiệu năng & Việc sinh bảng cho một màn không được gây thời gian chờ dài; dữ liệu chủ đề không nên được tối ưu toàn bộ trước khi người chơi chọn màn. \\ \hline
+Khả năng hiển thị & Bảng chữ cần nằm trong vùng chơi, các ô không quá lớn gây tràn và không quá nhỏ tới mức khó đọc. \\ \hline
+Độ ổn định dữ liệu & Nếu tệp lưu thiếu trường hoặc sai cấu trúc, hệ thống cần phục hồi về giá trị mặc định thay vì dừng chương trình. \\ \hline
+Dễ bảo trì & Mã nguồn cần phân tách giữa dữ liệu chủ đề, thuật toán sinh bảng, trạng thái chơi, điều khiển giao diện và lưu dữ liệu. \\ \hline
+Mở rộng nội dung & Hệ thống nên cho phép bổ sung chủ đề mới bằng cách thêm danh sách từ và gợi ý tương ứng trong bộ cung cấp màn chơi. \\ \hline
+\end{tabular}
+\caption{Yêu cầu phi chức năng}
+\label{table:nonfunctional}
+\end{table}
+
+Chương này đã xác định các chức năng chính và các ràng buộc phi chức năng của trò chơi. Đây là cơ sở để lựa chọn công nghệ và thiết kế kiến trúc trong các chương tiếp theo.
+
+\end{document}
