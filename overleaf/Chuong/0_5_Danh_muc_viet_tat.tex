@@ -1,18 +1,35 @@
 \documentclass[../DoAn.tex]{subfiles}
 \begin{document}
-\begin{longtable}{l p{6cm} p{7cm}}
-	\hline
-   \textbf{Viết tắt}  & \textbf{Tên tiếng Anh}	& \textbf{Tên tiếng Việt} \\ \hline 
-	\textbf{API} & Application Programming Interface & Giao diện lập trình ứng dụng\\
-	\textbf{CNTT} & Information Technology & Công nghệ thông tin\\
-	\textbf{ĐATN} & Graduation Thesis/Project & Đồ án tốt nghiệp \\
-	\textbf{UI} & User Interface & Giao diện người dùng\\
-	\textbf{UX} & User Experience & Trải nghiệm người dùng\\
-	\textbf{UML} & Unified Modeling Language & Ngôn ngữ mô hình hóa thống nhất\\
-	\textbf{JSON} & JavaScript Object Notation & Định dạng trao đổi dữ liệu dạng văn bản\\
-	\textbf{CLI} & Command Line Interface & Giao diện dòng lệnh\\
 
-    \hline
+\section*{DANH MỤC THUẬT NGỮ VÀ TỪ VIẾT TẮT}
+\addcontentsline{toc}{section}{DANH MỤC THUẬT NGỮ VÀ TỪ VIẾT TẮT}
+
+{\small
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\begin{longtable}{|>{\RaggedRight\arraybackslash}p{3.2cm}|>{\RaggedRight\arraybackslash}p{5.3cm}|>{\RaggedRight\arraybackslash}p{5.2cm}|}
+\caption{Danh mục thuật ngữ và từ viết tắt}
+\label{table:terms_acronyms}\\
+\hline
+\textbf{Thuật ngữ/từ viết tắt} & \textbf{Ý nghĩa tiếng Việt} & \textbf{Tên tiếng Anh/Ghi chú} \\ \hline
+\endfirsthead
+\hline
+\textbf{Thuật ngữ/từ viết tắt} & \textbf{Ý nghĩa tiếng Việt} & \textbf{Tên tiếng Anh/Ghi chú} \\ \hline
+\endhead
+\textbf{Godot Engine} & Nền tảng mã nguồn mở dùng để xây dựng trò chơi trong đồ án. & Game engine hỗ trợ phát triển game 2D/3D. \\ \hline
+\textbf{GDScript} & Ngôn ngữ kịch bản dùng để viết logic trong Godot. & Ngôn ngữ lập trình chính của project game. \\ \hline
+\textbf{Scene} & Đơn vị tổ chức giao diện hoặc đối tượng trong Godot. & Cấu trúc gồm một cây các node. \\ \hline
+\textbf{Node} & Thành phần cơ bản trong Godot, có thể là giao diện, đối tượng hiển thị hoặc xử lý logic. & Thành phần nằm trong cây scene. \\ \hline
+\textbf{Signal} & Cơ chế sự kiện để một node thông báo cho node khác xử lý. & Giao tiếp hướng sự kiện trong Godot. \\ \hline
+\textbf{UI} & Giao diện người dùng. & User Interface. \\ \hline
+\textbf{UX} & Trải nghiệm người dùng khi thao tác với ứng dụng. & User Experience. \\ \hline
+\textbf{UML} & Ngôn ngữ mô hình hóa thống nhất. & Unified Modeling Language. \\ \hline
+\textbf{JSON} & Định dạng văn bản dùng để trao đổi và lưu trữ dữ liệu. & JavaScript Object Notation. \\ \hline
+\textbf{Ô chữ} & Dạng trò chơi trong đó các từ được đặt trên lưới và có thể giao nhau tại ký tự chung. & Crossword-style word puzzle. \\ \hline
+\textbf{Heuristic} & Cách tìm lời giải gần đúng dựa trên tiêu chí kinh nghiệm. & Không bảo đảm tối ưu toàn cục nhưng phù hợp với phạm vi nguyên mẫu. \\ \hline
+\textbf{Chuẩn hóa từ} & Đưa từ về dạng thống nhất trước khi xử lý, ví dụ chữ thường hoặc bỏ khoảng trắng khi xếp bảng. & Normalization for word processing. \\ \hline
+\textbf{Tệp lưu cục bộ} & Tệp lưu hồ sơ, điểm, sao và tiến độ trên máy người chơi. & Dùng vùng \texttt{user://records.json} của Godot; không phải Web LocalStorage. \\ \hline
 \end{longtable}
+}
 
 \end{document}

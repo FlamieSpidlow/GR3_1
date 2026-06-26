@@ -1,4 +1,4 @@
-\documentclass[a4paper,13pt,3p,twoside]{report}
+\documentclass[a4paper,13pt,3p,oneside]{report}
 \usepackage{scrextend}
 \changefontsizes{13pt}
 \usepackage[utf8]{vietnam}
@@ -14,7 +14,13 @@
 \usepackage{amsbsy} % Hỗ trợ các kí hiệu in đậm
 \usepackage{times} % Chọn font Time New Romans
 \usepackage{array} % Tạo bảng array
+\usepackage{tabularx}
 \usepackage{longtable} % Tạo bảng dài cho danh mục viết tắt và thuật ngữ
+\usepackage{booktabs}
+\usepackage{ragged2e}
+\usepackage{makecell}
+\usepackage{adjustbox}
+\usepackage{seqsplit}
 \usepackage{enumitem} % Cho phép thay đổi kí hiệu của list
 \usepackage{subfiles} % Chèn các file nhỏ, giúp chia các chapter ra nhiều file hơn
 \usepackage{titlesec} % Giúp chỉnh sửa các tiêu đề, đề mục như chương, phần,..
@@ -36,9 +42,6 @@
 \usepackage{subcaption}
 \usepackage{xurl}
 
-\usepackage[nonumberlist, nopostdot, nogroupskip, acronym]{glossaries}
-\usepackage{glossary-superragged}
-\setglossarystyle{superraggedheaderborder}
 \usepackage{setspace}
 \usepackage{parskip}
 
@@ -46,6 +49,31 @@
 \usepackage{tocbasic}
 
 \usepackage{blindtext}
+
+\let\cleardoublepage\clearpage
+
+\newif\ifshowtodos
+\showtodosfalse
+\newcommand{\thesistodo}[1]{\ifshowtodos\par\noindent\textbf{[Cần bổ sung: #1]}\par\fi}
+\newcommand{\classname}[1]{\mbox{\texttt{#1}}}
+\newif\ifshowlistoffigures
+\showlistoffiguresfalse
+
+% TODO hinh/so do can bo sung sau:
+% - Use case tong quat.
+% - Use case phan ra nhom tai khoan/chu de/gameplay/tien do.
+% - Activity diagram quy trinh choi.
+% - So do kien truc tong the.
+% - So do goi/module.
+% - Class diagram muc cao.
+% - Sequence diagram chon man va sinh bang.
+% - Sequence diagram nhap dap an.
+% - Anh man hinh menu chinh.
+% - Anh chon tai khoan.
+% - Anh chon chu de.
+% - Anh chon man.
+% - Anh man choi.
+% - Anh man hoan thanh.
 
 
 % ===================================================
@@ -62,21 +90,23 @@
 
 % Cau hinh hien thi ma nguon co the bo sung sau neu can.
 
-\input{Tu_viet_tat}
+\newcommand{\codeword}[1]{\texttt{\seqsplit{#1}}}
 
 % ===================================================
 
 
 \fancypagestyle{plain}{%
 \fancyhf{} % clear all header and footer fields
-\fancyfoot[RO,RE]{\thepage} %RO=right odd, RE=right even
+\fancyfoot[R]{\thepage}
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}}
+\renewcommand{\chaptermark}[1]{\markboth{CHƯƠNG \thechapter. #1}{}}
 
 \setlength{\headheight}{10pt}
 
 \def \TITLE{THIẾT KẾ VÀ XÂY DỰNG TRÒ CHƠI GIẢI ĐỐ TỪ VỰNG TIẾNG VIỆT THEO CHỦ ĐỀ TRÊN NỀN TẢNG GODOT}
 \def \AUTHOR{NGUYỄN MINH HIẾU}
+\def \STUDENTID{202225626}
 
 % ===================================================
 \titleformat{\chapter}[hang]{\centering\bfseries}{CHƯƠNG \thechapter.\ }{0pt}{}[]
@@ -222,16 +252,18 @@
 \addtocontents{toc}{\protect\thispagestyle{empty}}
 \tableofcontents 
 \thispagestyle{empty}
-\cleardoublepage
+\clearpage
 
 % \pagenumbering{roman}
 %Tạo danh mục hình vẽ.
+\ifshowlistoffigures
 \renewcommand{\listfigurename}{DANH MỤC HÌNH VẼ}
 {\let\oldnumberline\numberline
 \renewcommand{\numberline}{Hình~\oldnumberline}
 \listoffigures} 
 % \phantomsection\addcontentsline{toc}{section}{\numberline {} DANH MỤC HÌNH VẼ}
 \newpage
+\fi
 
 
  %Tạo danh mục bảng biểu.
@@ -241,19 +273,12 @@
 \listoftables}
 % \phantomsection\addcontentsline{toc}{section}{\numberline {} DANH MỤC BẢNG BIỂU}
 
-\glsaddall 
- \renewcommand*{\glossaryname}{Danh sách thuật ngữ}
-\renewcommand*{\acronymname}{DANH MỤC THUẬT NGỮ VÀ TỪ VIẾT TẮT}
-\renewcommand*{\entryname}{Thuật ngữ}
-\renewcommand*{\descriptionname}{Ý nghĩa}
-\printnoidxglossaries
- %\phantomsection\addcontentsline{toc}{section}{\numberline {} DANH MỤC THUẬT NGỮ VÀ TỪ VIẾT TẮT}
-
 \newpage
+\begingroup
+\renewcommand{\thetable}{\arabic{table}}
 \subfile{Chuong/0_5_Danh_muc_viet_tat.tex}
+\endgroup
 
-\newpage
-\subfile{Chuong/0_6_Thuat_ngu.tex}
 % ===================================================
 
 
@@ -262,9 +287,9 @@
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[RE, LO]{\leftmark}
+\fancyhead[L]{\leftmark}
 %\fancyhead[LE]{\rightmark}
-\fancyfoot[RE, LO]{\thepage}
+\fancyfoot[R]{\thepage}
 
 \chapter{GIỚI THIỆU ĐỀ TÀI}
 \label{chapter:Introduction}
@@ -285,7 +310,7 @@
 
 \newpage
 %\pagestyle{fancy} % Áp dụng header và footer
-\chapter{PHÂN TÍCH THIẾT KẾ, TRIỂN KHAI VÀ ĐÁNH GIÁ HỆ THỐNG}
+\chapter[Phân tích, thiết kế và đánh giá]{PHÂN TÍCH, THIẾT KẾ VÀ ĐÁNH GIÁ HỆ THỐNG}
 \label{chapter:Experiment}
 \subfile{Chuong/4_Ket_qua_thuc_nghiem}
 
