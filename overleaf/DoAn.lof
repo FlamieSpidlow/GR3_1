@@ -1,0 +1,21 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Biểu đồ use case tổng quát của hệ thống}}{6}{figure.caption.6}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Biểu đồ use case phân rã theo nhóm chức năng}}{8}{figure.caption.8}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Activity diagram quy trình chọn màn và khởi tạo bảng}}{9}{figure.caption.9}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Activity diagram quy trình giải ô chữ và ghi nhận kết quả}}{10}{figure.caption.10}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Mô hình scene, node và signal trong Godot}}{15}{figure.caption.16}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Quy trình xử lý chuỗi tiếng Việt trong hệ thống}}{17}{figure.caption.17}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Luồng sinh bảng ô chữ ở mức khái niệm}}{18}{figure.caption.18}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Kiến trúc tổng quan của hệ thống}}{20}{figure.caption.19}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Luồng chuyển màn trong ứng dụng}}{21}{figure.caption.21}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Class diagram rút gọn của các thành phần chính}}{22}{figure.caption.22}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Sequence diagram quy trình bắt đầu màn chơi}}{24}{figure.caption.25}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Sequence diagram quy trình nhập đáp án và cập nhật trạng thái}}{25}{figure.caption.26}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Cấu trúc dữ liệu lưu tiến độ cục bộ}}{25}{figure.caption.27}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsfinish 
+\contentsfinish 

@@ -1,0 +1,24 @@
+\begin{tikzpicture}[
+    font=\small,
+    flowstep/.style={draw, rounded corners, align=center, minimum width=3.3cm, minimum height=0.8cm, fill=white},
+    data/.style={draw, rounded corners, align=center, minimum width=3.3cm, minimum height=0.8cm, fill=blue!6},
+    arrow/.style={-Stealth, thick}
+]
+\node[data] (raw) at (0,0) {Đáp án gốc};
+\node[flowstep] (lower) at (4.0,0) {Chuẩn hóa\\chữ thường};
+\node[flowstep] (space) at (8.0,0) {Bỏ khoảng trắng\\khi xếp bảng};
+\node[data] (puzzle) at (12.0,0) {Tạo\\\texttt{puzzle\_word}};
+
+\node[flowstep] (split) at (12.0,-1.8) {Tách ký tự\\tiếng Việt};
+\node[data] (parts) at (8.0,-1.8) {Lưu ký tự gốc,\\cơ sở, biến thể,\\thanh điệu};
+\node[flowstep] (match) at (4.0,-1.8) {So khớp đáp án\\người chơi};
+\node[data] (result) at (0,-1.8) {Kết quả\\đúng/sai};
+
+\draw[arrow] (raw) -- (lower);
+\draw[arrow] (lower) -- (space);
+\draw[arrow] (space) -- (puzzle);
+\draw[arrow] (puzzle) -- (split);
+\draw[arrow] (split) -- (parts);
+\draw[arrow] (parts) -- (match);
+\draw[arrow] (match) -- (result);
+\end{tikzpicture}

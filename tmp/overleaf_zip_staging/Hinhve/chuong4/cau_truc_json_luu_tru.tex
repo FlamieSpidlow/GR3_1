@@ -1,0 +1,41 @@
+\begin{tikzpicture}[
+    font=\small,
+    node/.style={draw, rounded corners=4pt, align=left, minimum width=3.0cm, minimum height=0.65cm, fill=gray!8},
+    key/.style={draw, rounded corners=4pt, align=left, minimum width=3.0cm, minimum height=0.65cm, fill=blue!8},
+    arrow/.style={-{Stealth[length=2mm]}, thick}
+]
+\node[key] (root) at (0,0) {\code{records.json}};
+\node[node] (current) at (4.0,0.8) {\code{current_profile_id}};
+\node[node] (profiles) at (4.0,-0.8) {\code{profiles}};
+\node[node] (profile) at (8.0,-0.8) {\code{profile_id}};
+\node[node] (name) at (12.0,1.6) {\code{name}};
+\node[node] (records) at (12.0,0.4) {\code{records}};
+\node[node] (score) at (16.0,2.7) {\code{best_score}};
+\node[node] (stars) at (16.0,1.7) {\code{total_stars}};
+\node[node] (earned) at (16.0,0.7) {\code{earned_stars}};
+\node[node] (spent) at (16.0,-0.3) {\code{spent_stars}};
+\node[node] (played) at (16.0,-1.3) {\code{games_played}};
+\node[node] (levels) at (16.0,-2.3) {\code{levels}};
+\node[node] (levelid) at (20.0,-2.3) {\code{level_id}};
+\node[node] (completed) at (24.0,-0.8) {\code{completed}};
+\node[node] (levelstars) at (24.0,-1.8) {\code{stars}};
+\node[node] (bestscore) at (24.0,-2.8) {\code{best_score}};
+\node[node] (besttime) at (24.0,-3.8) {\code{best_time}};
+
+\draw[arrow] (root) -- (current);
+\draw[arrow] (root) -- (profiles);
+\draw[arrow] (profiles) -- (profile);
+\draw[arrow] (profile) -- (name);
+\draw[arrow] (profile) -- (records);
+\draw[arrow] (records) -- (score);
+\draw[arrow] (records) -- (stars);
+\draw[arrow] (records) -- (earned);
+\draw[arrow] (records) -- (spent);
+\draw[arrow] (records) -- (played);
+\draw[arrow] (records) -- (levels);
+\draw[arrow] (levels) -- (levelid);
+\draw[arrow] (levelid) -- (completed);
+\draw[arrow] (levelid) -- (levelstars);
+\draw[arrow] (levelid) -- (bestscore);
+\draw[arrow] (levelid) -- (besttime);
+\end{tikzpicture}

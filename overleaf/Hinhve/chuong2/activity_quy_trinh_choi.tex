@@ -1,0 +1,64 @@
+\begin{tikzpicture}[
+    font=\scriptsize,
+    action/.style={draw, rounded corners, minimum width=3.25cm, minimum height=0.62cm, align=center},
+    decision/.style={draw, diamond, aspect=2.0, inner sep=1pt, minimum width=2.75cm, align=center},
+    startend/.style={draw, ellipse, minimum width=2.55cm, minimum height=0.62cm, align=center},
+    arrow/.style={-Stealth, thick},
+    note/.style={font=\scriptsize}
+]
+\node[startend] (start) at (0,0) {Bắt đầu};
+\node[action, below=0.45cm of start] (account) {Chọn hoặc tạo\\tài khoản};
+\node[action, below=0.45cm of account] (play) {Bấm Chơi};
+\node[action, below=0.45cm of play] (topic) {Chọn chủ đề};
+\node[action, below=0.45cm of topic] (stage) {Chọn màn chơi};
+\node[action, below=0.45cm of stage] (board) {Hệ thống sinh\\bảng ô chữ};
+\node[decision, below=0.55cm of board] (boardOk) {Sinh bảng\\thành công?};
+\node[action, right=2.8cm of boardOk] (boardFail) {Thông báo không thể\\tạo màn};
+\node[action, below=0.65cm of boardOk] (showGame) {Hiển thị màn chơi};
+\node[action, below=0.45cm of showGame] (select) {Người chơi\\chọn gợi ý};
+\node[action, below=0.45cm of select] (guess) {Người chơi\\nhập đáp án};
+\node[action, right=2.8cm of select] (wantHint) {Tùy chọn:\\dùng gợi ý};
+\node[decision, below=0.5cm of wantHint] (enoughStar) {Đủ sao?};
+\node[action, below=0.55cm of enoughStar] (openHint) {Mở chữ hoặc từ,\\trừ sao};
+\node[action, right=2.2cm of enoughStar] (noStar) {Thông báo\\không đủ sao};
+\node[action, below=0.45cm of guess] (check) {Hệ thống\\kiểm tra đáp án};
+\node[decision, below=0.55cm of check] (correct) {Đáp án\\đúng?};
+\node[action, right=2.8cm of correct] (wrong) {Phản hồi sai\\và cho nhập lại};
+\node[action, below=0.65cm of correct] (open) {Mở từ, cộng điểm,\\cập nhật trạng thái};
+\node[decision, below=0.6cm of open] (done) {Tất cả từ\\hoàn thành?};
+\node[action, right=2.8cm of done] (continue) {Tiếp tục chọn gợi ý\\hoặc nhập đáp án};
+\node[action, below=0.65cm of done] (score) {Tính điểm,\\tính sao nhiệm vụ};
+\node[action, below=0.45cm of score] (save) {Ghi nhận tiến độ};
+\node[action, below=0.45cm of save] (result) {Hiển thị kết quả};
+\node[startend, below=0.45cm of result] (end) {Kết thúc};
+
+\draw[arrow] (start) -- (account);
+\draw[arrow] (account) -- (play);
+\draw[arrow] (play) -- (topic);
+\draw[arrow] (topic) -- (stage);
+\draw[arrow] (stage) -- (board);
+\draw[arrow] (board) -- (boardOk);
+\draw[arrow] (boardOk) -- node[note, left] {Có} (showGame);
+\draw[arrow] (boardOk) -- node[note, above] {Không} (boardFail);
+\draw[arrow] (boardFail.east) -- ++(0.8,0) |- (stage.east);
+\draw[arrow] (showGame) -- (select);
+\draw[arrow] (select) -- (guess);
+\draw[arrow] (select.east) -- (wantHint.west);
+\draw[arrow] (wantHint) -- (enoughStar);
+\draw[arrow] (enoughStar) -- node[note, left] {Có} (openHint);
+\draw[arrow] (enoughStar) -- node[note, above] {Không} (noStar);
+\draw[arrow] (openHint.west) -- ++(-0.6,0) |- (guess.east);
+\draw[arrow] (noStar.east) -- ++(0.55,0) |- (select.east);
+\draw[arrow] (guess) -- (check);
+\draw[arrow] (check) -- (correct);
+\draw[arrow] (correct) -- node[note, left] {Có} (open);
+\draw[arrow] (correct) -- node[note, above] {Không} (wrong);
+\draw[arrow] (wrong.east) -- ++(0.8,0) |- (guess.east);
+\draw[arrow] (open) -- (done);
+\draw[arrow] (done) -- node[note, left] {Có} (score);
+\draw[arrow] (done) -- node[note, above] {Chưa} (continue);
+\draw[arrow] (continue.east) -- ++(0.8,0) |- (select.east);
+\draw[arrow] (score) -- (save);
+\draw[arrow] (save) -- (result);
+\draw[arrow] (result) -- (end);
+\end{tikzpicture}

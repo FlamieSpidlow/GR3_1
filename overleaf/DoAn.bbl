@@ -1,0 +1,203 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{wouters2013seriousgames}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=9df08a724bb83b4a09e45550480e1292}{%
+           family={Wouters},
+           familyi={W\bibinitperiod},
+           given={Pieter},
+           giveni={P\bibinitperiod}}}%
+        {{hash=b220a6603e4ee84790aac6f1cf7f2d9d}{%
+           family={Nimwegen},
+           familyi={N\bibinitperiod},
+           given={Christof},
+           giveni={C\bibinitperiod},
+           prefix={van},
+           prefixi={v\bibinitperiod}}}%
+        {{hash=06900841c327ca0789f174612d645055}{%
+           family={Oostendorp},
+           familyi={O\bibinitperiod},
+           given={Herre},
+           giveni={H\bibinitperiod},
+           prefix={van},
+           prefixi={v\bibinitperiod}}}%
+        {{hash=a50889ef358715a0c4daf062bf6d611e}{%
+           family={Spek},
+           familyi={S\bibinitperiod},
+           given={Erik\bibnamedelima D.},
+           giveni={E\bibinitperiod\bibinitdelim D\bibinitperiod},
+           prefix={van\bibnamedelima der},
+           prefixi={v\bibinitperiod\bibinitdelim d\bibinitperiod}}}%
+      }
+      \strng{namehash}{7e76e3bfee0f97b1d44ab84f603dc606}
+      \strng{fullhash}{991d625d7a5d356d6a723f40482f50d7}
+      \strng{fullhashraw}{991d625d7a5d356d6a723f40482f50d7}
+      \strng{bibnamehash}{991d625d7a5d356d6a723f40482f50d7}
+      \strng{authorbibnamehash}{991d625d7a5d356d6a723f40482f50d7}
+      \strng{authornamehash}{7e76e3bfee0f97b1d44ab84f603dc606}
+      \strng{authorfullhash}{991d625d7a5d356d6a723f40482f50d7}
+      \strng{authorfullhashraw}{991d625d7a5d356d6a723f40482f50d7}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Educational Psychology}
+      \field{number}{2}
+      \field{title}{A Meta-Analysis of the Cognitive and Motivational Effects of Serious Games}
+      \field{volume}{105}
+      \field{year}{2013}
+      \field{pages}{249\bibrangedash 265}
+      \range{pages}{17}
+      \verb{doi}
+      \verb 10.1037/a0031311
+      \endverb
+    \endentry
+    \entry{godotDocs}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=da247a11d1698b246cac2b51685687cc}{%
+           family={{Godot Engine}},
+           familyi={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{da247a11d1698b246cac2b51685687cc}
+      \strng{fullhash}{da247a11d1698b246cac2b51685687cc}
+      \strng{fullhashraw}{da247a11d1698b246cac2b51685687cc}
+      \strng{bibnamehash}{da247a11d1698b246cac2b51685687cc}
+      \strng{authorbibnamehash}{da247a11d1698b246cac2b51685687cc}
+      \strng{authornamehash}{da247a11d1698b246cac2b51685687cc}
+      \strng{authorfullhash}{da247a11d1698b246cac2b51685687cc}
+      \strng{authorfullhashraw}{da247a11d1698b246cac2b51685687cc}
+      \field{extraname}{1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Godot Engine Documentation}
+      \field{urlday}{25}
+      \field{urlmonth}{6}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://docs.godotengine.org/
+      \endverb
+      \verb{url}
+      \verb https://docs.godotengine.org/
+      \endverb
+    \endentry
+    \entry{godotGDScript}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=da247a11d1698b246cac2b51685687cc}{%
+           family={{Godot Engine}},
+           familyi={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{da247a11d1698b246cac2b51685687cc}
+      \strng{fullhash}{da247a11d1698b246cac2b51685687cc}
+      \strng{fullhashraw}{da247a11d1698b246cac2b51685687cc}
+      \strng{bibnamehash}{da247a11d1698b246cac2b51685687cc}
+      \strng{authorbibnamehash}{da247a11d1698b246cac2b51685687cc}
+      \strng{authornamehash}{da247a11d1698b246cac2b51685687cc}
+      \strng{authorfullhash}{da247a11d1698b246cac2b51685687cc}
+      \strng{authorfullhashraw}{da247a11d1698b246cac2b51685687cc}
+      \field{extraname}{2}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{GDScript Reference}
+      \field{urlday}{25}
+      \field{urlmonth}{6}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/
+      \endverb
+      \verb{url}
+      \verb https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/
+      \endverb
+    \endentry
+    \entry{unicodeNormalization}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=7e7cd0be1f64c582b663fb7e99eaab77}{%
+           family={{Unicode Consortium}},
+           familyi={U\bibinitperiod}}}%
+      }
+      \strng{namehash}{7e7cd0be1f64c582b663fb7e99eaab77}
+      \strng{fullhash}{7e7cd0be1f64c582b663fb7e99eaab77}
+      \strng{fullhashraw}{7e7cd0be1f64c582b663fb7e99eaab77}
+      \strng{bibnamehash}{7e7cd0be1f64c582b663fb7e99eaab77}
+      \strng{authorbibnamehash}{7e7cd0be1f64c582b663fb7e99eaab77}
+      \strng{authornamehash}{7e7cd0be1f64c582b663fb7e99eaab77}
+      \strng{authorfullhash}{7e7cd0be1f64c582b663fb7e99eaab77}
+      \strng{authorfullhashraw}{7e7cd0be1f64c582b663fb7e99eaab77}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Unicode Standard Annex \#15: Unicode Normalization Forms}
+      \field{urlday}{26}
+      \field{urlmonth}{6}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.unicode.org/reports/tr15/
+      \endverb
+      \verb{url}
+      \verb https://www.unicode.org/reports/tr15/
+      \endverb
+    \endentry
+    \entry{rfc8259}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=3e2f0f38495aebf8b91a698c2ccbfae3}{%
+           family={Bray},
+           familyi={B\bibinitperiod},
+           given={Tim},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{3e2f0f38495aebf8b91a698c2ccbfae3}
+      \strng{fullhash}{3e2f0f38495aebf8b91a698c2ccbfae3}
+      \strng{fullhashraw}{3e2f0f38495aebf8b91a698c2ccbfae3}
+      \strng{bibnamehash}{3e2f0f38495aebf8b91a698c2ccbfae3}
+      \strng{authorbibnamehash}{3e2f0f38495aebf8b91a698c2ccbfae3}
+      \strng{authornamehash}{3e2f0f38495aebf8b91a698c2ccbfae3}
+      \strng{authorfullhash}{3e2f0f38495aebf8b91a698c2ccbfae3}
+      \strng{authorfullhashraw}{3e2f0f38495aebf8b91a698c2ccbfae3}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{RFC 8259}
+      \field{title}{The JavaScript Object Notation ({JSON}) Data Interchange Format}
+      \field{urlday}{26}
+      \field{urlmonth}{6}
+      \field{urlyear}{2026}
+      \field{year}{2017}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.rfc-editor.org/rfc/rfc8259
+      \endverb
+      \verb{url}
+      \verb https://www.rfc-editor.org/rfc/rfc8259
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

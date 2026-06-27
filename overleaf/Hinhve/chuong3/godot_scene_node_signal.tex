@@ -1,0 +1,28 @@
+\begin{tikzpicture}[
+    font=\small,
+    box/.style={draw, rounded corners, align=center, minimum width=3.0cm, minimum height=0.85cm, fill=white},
+    scene/.style={draw, rounded corners, align=center, minimum width=10.5cm, minimum height=3.9cm, fill=gray!8},
+    signal/.style={draw, rounded corners, align=center, minimum width=3.2cm, minimum height=0.85cm, fill=yellow!12},
+    arrow/.style={-Stealth, thick}
+]
+\node[scene] (scene) at (5.8,0) {};
+\node[font=\bfseries] at ($(scene.north)+(0,-0.35)$) {Scene};
+
+\node[box] (control) at (2.2,0.75) {Control};
+\node[box] (button) at (5.8,0.75) {Button};
+\node[box] (label) at (9.4,0.75) {Label};
+\node[box] (grid) at (5.8,-0.75) {GridContainer};
+\node[box] (logic) at (9.4,-0.75) {Node logic};
+
+\node[box, fill=blue!6] (player) at (-1.0,0.75) {Thao tác\\người chơi};
+\node[signal] (sig) at (5.8,-2.65) {Signal\\sự kiện};
+\node[box, fill=green!8] (handler) at (10.0,-2.65) {Logic xử lý};
+
+\draw[arrow] (player.east) -- (control.west);
+\draw[arrow] (control.east) -- (button.west);
+\draw[arrow] (button.south) -- ++(0,-0.45) -- (sig.north);
+\draw[arrow] (grid.south) -- ++(0,-0.45) -- (sig.north);
+\draw[arrow] (sig.east) -- (handler.west);
+\draw[arrow] (handler.north) -- (logic.south);
+\draw[arrow, dashed] (logic.west) -- (grid.east);
+\end{tikzpicture}

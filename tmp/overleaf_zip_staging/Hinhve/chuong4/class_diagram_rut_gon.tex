@@ -1,0 +1,34 @@
+\begin{tikzpicture}[
+    font=\scriptsize,
+    class/.style={draw, rounded corners=4pt, align=center, minimum width=2.8cm, minimum height=0.72cm, fill=gray!8},
+    data/.style={draw, rounded corners=4pt, align=center, minimum width=2.8cm, minimum height=0.72cm, fill=blue!8},
+    util/.style={draw, rounded corners=4pt, align=center, minimum width=2.8cm, minimum height=0.72cm, fill=yellow!12},
+    arrow/.style={-{Stealth[length=2mm]}, thick}
+]
+\node[class] (main) at (5.8,3.0) {\code{main.gd}};
+\node[class] (ui) at (2.8,1.5) {\code{UIController}};
+\node[class] (provider) at (8.8,1.5) {\code{ThemedLevelProvider}};
+\node[util] (save) at (11.8,3.0) {\code{SaveManager}};
+\node[class] (input) at (0,0) {\code{InputController}};
+\node[class] (tile) at (2.8,0) {\code{TileButton}};
+\node[data] (state) at (5.8,0) {\code{GameState}};
+\node[class] (board) at (8.8,0) {\code{BoardGenerator}};
+\node[data] (word) at (5.8,-1.6) {\code{WordEntry}};
+\node[util] (normalizer) at (2.8,-3.0) {\code{VietnameseNormalizer}};
+\node[util] (diacritic) at (8.8,-3.0) {\code{DiacriticHelper}};
+
+\draw[arrow] (main) -- (ui);
+\draw[arrow] (main) -- (provider);
+\draw[arrow] (main) -- (save);
+\draw[arrow] (ui) -- (input);
+\draw[arrow] (ui) -- (tile);
+\draw[arrow] (ui) -- (state);
+\draw[arrow] (provider) -- (board);
+\draw[arrow] (provider) -- (word);
+\draw[arrow] (state) -- (word);
+\draw[arrow] (board) -- (word);
+\draw[arrow] (word) -- (normalizer);
+\draw[arrow] (word) -- (diacritic);
+\draw[arrow] (normalizer) -- (diacritic);
+\draw[arrow] (save) -- node[right]{JSON} ++(0,-1.6);
+\end{tikzpicture}

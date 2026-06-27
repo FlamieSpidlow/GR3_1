@@ -1,0 +1,29 @@
+\begin{tikzpicture}[
+    font=\small,
+    flowstep/.style={draw, rounded corners, align=center, minimum width=4.2cm, minimum height=0.72cm, fill=white},
+    decision/.style={draw, diamond, aspect=2.2, align=center, inner sep=1pt, minimum width=3.1cm, fill=yellow!10},
+    arrow/.style={-Stealth, thick},
+    note/.style={font=\scriptsize}
+]
+\node[flowstep] (words) at (0,0) {Danh sách từ};
+\node[flowstep, below=0.55cm of words] (sort) {Sắp xếp hoặc chọn thứ tự thử};
+\node[flowstep, below=0.55cm of sort] (first) {Đặt từ đầu tiên gần trung tâm};
+\node[flowstep, below=0.55cm of first] (cross) {Tìm vị trí giao nhau};
+\node[decision, below=0.75cm of cross] (valid) {Vị trí\\hợp lệ?};
+\node[flowstep, below=0.75cm of valid] (score) {Chấm điểm vị trí};
+\node[flowstep, below=0.55cm of score] (place) {Cập nhật bảng};
+\node[decision, below=0.75cm of place] (more) {Còn từ\\cần đặt?};
+\node[flowstep, below=0.75cm of more] (output) {Trả về bảng và danh sách từ đã đặt};
+
+\draw[arrow] (words) -- (sort);
+\draw[arrow] (sort) -- (first);
+\draw[arrow] (first) -- (cross);
+\draw[arrow] (cross) -- (valid);
+\draw[arrow] (valid) -- node[note, left] {Có} (score);
+\draw[arrow] (score) -- (place);
+\draw[arrow] (place) -- (more);
+\draw[arrow] (more) -- node[note, left] {Không} (output);
+
+\draw[arrow] (valid.east) -- ++(1.25,0) |- node[note, pos=0.18, right] {Không} (cross.east);
+\draw[arrow] (more.east) -- ++(1.25,0) |- node[note, pos=0.18, right] {Có} (cross.east);
+\end{tikzpicture}

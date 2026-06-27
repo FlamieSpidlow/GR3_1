@@ -1,0 +1,24 @@
+\begin{tikzpicture}[
+    font=\small,
+    screenstep/.style={draw, rounded corners=5pt, align=center, minimum width=3.3cm, minimum height=0.9cm, fill=gray!8},
+    arrow/.style={-{Stealth[length=2mm]}, thick}
+]
+\node[screenstep] (menu) at (0,0) {StartMenu};
+\node[screenstep] (profile) at (3.8,0) {Chọn/Tạo\\tài khoản};
+\node[screenstep] (topic) at (7.6,0) {Chọn\\chủ đề};
+\node[screenstep] (level) at (11.4,0) {Chọn\\màn};
+\node[screenstep] (state) at (11.4,-2.0) {Khởi tạo\\GameState};
+\node[screenstep] (board) at (7.6,-2.0) {GameBoard};
+\node[screenstep] (result) at (3.8,-2.0) {Hộp thoại\\kết quả};
+\node[screenstep] (back) at (0,-2.0) {Quay lại menu\\hoặc chọn màn};
+
+\draw[arrow] (menu) -- (profile);
+\draw[arrow] (profile) -- (topic);
+\draw[arrow] (topic) -- (level);
+\draw[arrow] (level) -- (state);
+\draw[arrow] (state) -- (board);
+\draw[arrow] (board) -- node[above]{hoàn thành} (result);
+\draw[arrow] (result) -- (back);
+\draw[arrow] (back) -- (menu);
+\draw[arrow] (back.north east) .. controls (3.0,-0.9) and (8.0,-0.9) .. node[below]{chơi tiếp} (level.south west);
+\end{tikzpicture}

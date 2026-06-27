@@ -1,0 +1,32 @@
+\begin{tikzpicture}[
+    font=\small,
+    actorlabel/.style={align=center},
+    usecase/.style={draw, ellipse, align=center, minimum width=4.0cm, minimum height=0.86cm, fill=white},
+    boundary/.style={draw, rounded corners=4pt, minimum width=9.4cm, minimum height=7.5cm},
+    assoc/.style={thick}
+]
+\coordinate (actor) at (0,0);
+\draw[thick] (actor) ++(0,1.0) circle (0.23);
+\draw[thick] (actor) ++(0,0.77) -- ++(0,-0.9);
+\draw[thick] (actor) ++(-0.5,0.35) -- ++(1.0,0);
+\draw[thick] (actor) ++(0,-0.13) -- ++(-0.45,-0.72);
+\draw[thick] (actor) ++(0,-0.13) -- ++(0.45,-0.72);
+\node[actorlabel] at ($(actor)+(0,-1.25)$) {Người chơi};
+
+\node[boundary] (system) at (6.8,0) {};
+\node[font=\bfseries, align=center] at ($(system.north)+(0,-0.36)$)
+    {Trò chơi giải đố từ vựng dạng ô chữ};
+
+\node[usecase] (account) at (6.8,2.45) {Quản lý tài khoản};
+\node[usecase] (topic) at (6.8,1.62) {Chọn chủ đề};
+\node[usecase] (level) at (6.8,0.79) {Chọn màn chơi};
+\node[usecase] (play) at (6.8,-0.04) {Giải ô chữ};
+\node[usecase] (hint) at (6.8,-0.87) {Sử dụng gợi ý};
+\node[usecase] (result) at (6.8,-1.70) {Xem kết quả};
+\node[usecase] (progress) at (6.8,-2.53) {Theo dõi tiến độ};
+
+\coordinate (hub) at (2.0,0);
+\draw[assoc] ($(actor)+(0.58,0.22)$) -- (hub);
+\foreach \target in {account,topic,level,play,hint,result,progress}
+    \draw[assoc] (hub) |- (\target.west);
+\end{tikzpicture}

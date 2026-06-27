@@ -1,0 +1,45 @@
+\begin{tikzpicture}[
+    font=\small,
+    action/.style={draw, rounded corners=4pt, minimum width=4.2cm, minimum height=0.68cm, align=center, fill=white},
+    decision/.style={draw, diamond, aspect=2.05, inner sep=1pt, minimum width=3.2cm, align=center, fill=yellow!10},
+    startend/.style={draw, ellipse, minimum width=2.9cm, minimum height=0.64cm, align=center, fill=white},
+    arrow/.style={-Stealth, thick},
+    note/.style={font=\footnotesize}
+]
+\node[startend] (start) {Bắt đầu màn chơi};
+\node[action, below=0.38cm of start] (select) {Người chơi chọn gợi ý};
+\node[decision, below=0.58cm of select] (wantHint) {Người chơi\\dùng gợi ý?};
+\node[decision, below=0.60cm of wantHint] (star) {Đủ sao?};
+\node[action, right=1.9cm of star] (nostar) {Thông báo\\không đủ sao};
+\node[action, below=0.55cm of star] (openhint) {Mở chữ hoặc từ,\\trừ sao};
+\node[action, below=0.42cm of openhint] (guess) {Người chơi nhập đáp án};
+\node[action, below=0.42cm of guess] (check) {Hệ thống kiểm tra đáp án};
+\node[decision, below=0.60cm of check] (correct) {Đáp án\\đúng?};
+\node[action, right=1.9cm of correct] (wrong) {Phản hồi sai\\và cho nhập lại};
+\node[action, below=0.60cm of correct] (open) {Mở từ, cộng điểm,\\cập nhật trạng thái};
+\node[decision, below=0.60cm of open] (done) {Tất cả từ\\hoàn thành?};
+\node[action, below=0.60cm of done] (score) {Tính điểm,\\tính sao nhiệm vụ};
+\node[action, below=0.38cm of score] (save) {Ghi nhận tiến độ};
+\node[action, below=0.38cm of save] (result) {Hiển thị kết quả};
+\node[startend, below=0.38cm of result] (end) {Kết thúc};
+
+\draw[arrow] (start) -- (select);
+\draw[arrow] (select) -- (wantHint);
+\draw[arrow] (wantHint) -- node[note, left] {Có} (star);
+\draw[arrow] (wantHint.west) -- ++(-0.75,0) node[note, above] {Không} |- (guess.west);
+\draw[arrow] (star) -- node[note, left] {Có} (openhint);
+\draw[arrow] (star) -- node[note, above] {Không} (nostar);
+\draw[arrow] (nostar.east) -- ++(0.55,0) |- (select.east);
+\draw[arrow] (openhint) -- (guess);
+\draw[arrow] (guess) -- (check);
+\draw[arrow] (check) -- (correct);
+\draw[arrow] (correct) -- node[note, left] {Có} (open);
+\draw[arrow] (correct) -- node[note, above] {Không} (wrong);
+\draw[arrow] (wrong.east) -- ++(0.55,0) |- (guess.east);
+\draw[arrow] (open) -- (done);
+\draw[arrow] (done) -- node[note, left] {Có} (score);
+\draw[arrow] (done.west) -- ++(-0.75,0) node[note, above] {Chưa} |- (select.west);
+\draw[arrow] (score) -- (save);
+\draw[arrow] (save) -- (result);
+\draw[arrow] (result) -- (end);
+\end{tikzpicture}

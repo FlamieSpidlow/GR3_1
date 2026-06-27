@@ -1,0 +1,26 @@
+\begin{tikzpicture}[
+    font=\small,
+    block/.style={draw, rounded corners=5pt, align=center, minimum width=3.2cm, minimum height=1.0cm, fill=gray!8},
+    store/.style={draw, rounded corners=5pt, align=center, minimum width=3.2cm, minimum height=1.0cm, fill=yellow!12},
+    actor/.style={draw, rounded corners=5pt, align=center, minimum width=2.8cm, minimum height=0.9cm, fill=blue!8},
+    arrow/.style={-{Stealth[length=2mm]}, thick}
+]
+\node[actor] (player) at (0,0) {Người chơi};
+\node[block] (ui) at (4.0,0) {Giao diện\\Godot};
+\node[block] (main) at (8.0,0) {Điều phối\\ứng dụng};
+\node[block] (state) at (8.0,-2.0) {Trạng thái\\trò chơi};
+\node[block] (board) at (4.0,-4.0) {Sinh bảng\\ô chữ};
+\node[block] (vietnamese) at (8.0,-4.0) {Xử lý\\tiếng Việt};
+\node[store] (topic) at (0,-4.0) {Dữ liệu\\chủ đề};
+\node[store] (save) at (12.0,-2.0) {Lưu tiến độ\\JSON};
+
+\draw[arrow] (player) -- (ui);
+\draw[arrow] (ui) -- (main);
+\draw[arrow] (main) -- (state);
+\draw[arrow] (state) -- (vietnamese);
+\draw[arrow] (state) -- (board);
+\draw[arrow] (topic) -- (board);
+\draw[arrow] (main) -- (save);
+\draw[arrow] (state) -- (save);
+\draw[arrow] (state) -- (ui);
+\end{tikzpicture}

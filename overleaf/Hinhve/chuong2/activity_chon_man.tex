@@ -1,0 +1,30 @@
+\begin{tikzpicture}[
+    font=\small,
+    action/.style={draw, rounded corners=4pt, minimum width=4.5cm, minimum height=0.72cm, align=center, fill=white},
+    decision/.style={draw, diamond, aspect=2.1, inner sep=1pt, minimum width=3.6cm, align=center, fill=yellow!10},
+    startend/.style={draw, ellipse, minimum width=3.0cm, minimum height=0.68cm, align=center, fill=white},
+    arrow/.style={-Stealth, thick},
+    note/.style={font=\footnotesize}
+]
+\node[startend] (start) {Bắt đầu};
+\node[action, below=0.45cm of start] (account) {Chọn hoặc tạo tài khoản};
+\node[action, below=0.45cm of account] (play) {Bấm Chơi};
+\node[action, below=0.45cm of play] (topic) {Chọn chủ đề};
+\node[action, below=0.45cm of topic] (level) {Chọn màn chơi};
+\node[action, below=0.45cm of level] (generate) {Hệ thống sinh bảng ô chữ};
+\node[decision, below=0.75cm of generate] (ok) {Sinh bảng\\thành công?};
+\node[action, right=2.2cm of ok] (fail) {Hiển thị thông báo\\không thể tạo màn};
+\node[action, below=0.75cm of ok] (show) {Hiển thị màn chơi};
+\node[action, below=0.45cm of show] (next) {Chuyển sang quy trình giải ô chữ};
+
+\draw[arrow] (start) -- (account);
+\draw[arrow] (account) -- (play);
+\draw[arrow] (play) -- (topic);
+\draw[arrow] (topic) -- (level);
+\draw[arrow] (level) -- (generate);
+\draw[arrow] (generate) -- (ok);
+\draw[arrow] (ok) -- node[note, left] {Có} (show);
+\draw[arrow] (show) -- (next);
+\draw[arrow] (ok) -- node[note, above] {Không} (fail);
+\draw[arrow] (fail.east) -- ++(0.6,0) |- (level.east);
+\end{tikzpicture}

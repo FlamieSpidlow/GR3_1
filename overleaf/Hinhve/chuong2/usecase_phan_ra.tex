@@ -1,0 +1,50 @@
+\begin{tikzpicture}[
+    font=\small,
+    group/.style={
+        draw,
+        rounded corners=5pt,
+        fill=gray!8,
+        text width=4.7cm,
+        minimum height=2.8cm,
+        align=center,
+        inner sep=8pt
+    },
+    actorlink/.style={thick, -{Stealth[length=2mm]}, gray!70}
+]
+\coordinate (actorbase) at (-3.2,0);
+\draw[thick] (actorbase) ++(0,0.9) circle (0.22);
+\draw[thick] (actorbase) ++(0,0.68) -- ++(0,-0.82);
+\draw[thick] (actorbase) ++(-0.48,0.28) -- ++(0.96,0);
+\draw[thick] (actorbase) ++(0,-0.14) -- ++(-0.42,-0.70);
+\draw[thick] (actorbase) ++(0,-0.14) -- ++(0.42,-0.70);
+\node[align=center] at ($(actorbase)+(0,-1.10)$) {Người chơi};
+
+\node[group] (account) at (0.8,1.65) {
+    \textbf{Tài khoản}\par\vspace{0.20cm}
+    Tạo tài khoản\par
+    Chọn tài khoản\par
+    Xóa tài khoản
+};
+\node[group] (level) at (6.5,1.65) {
+    \textbf{Chủ đề và màn chơi}\par\vspace{0.20cm}
+    Chọn chủ đề\par
+    Xem danh sách màn\par
+    Bắt đầu màn chơi
+};
+\node[group] (gameplay) at (0.8,-1.85) {
+    \textbf{Gameplay}\par\vspace{0.20cm}
+    Chọn gợi ý\par
+    Nhập đáp án\par
+    Kiểm tra đáp án\par
+    Dùng gợi ý
+};
+\node[group] (result) at (6.5,-1.85) {
+    \textbf{Kết quả và tiến độ}\par\vspace{0.20cm}
+    Hiển thị kết quả\par
+    Ghi nhận tiến độ\par
+    Tải lại tiến độ
+};
+
+\draw[actorlink] ($(actorbase)+(0.62,0.18)$) -- ($(account.west)+(-0.10,0)$);
+\draw[actorlink] ($(actorbase)+(0.62,-0.18)$) -- ($(gameplay.west)+(-0.10,0)$);
+\end{tikzpicture}
